@@ -3406,7 +3406,7 @@
         </h2>
 
         <p class="info-popup-subtitle">
-            Ranks are based on total rounds played and your average recorded score. No Mercy uses its time-adjusted ranked score.
+            Only No Mercy rounds count toward rank. Your rank uses their time-adjusted scores and ignores every other mode.
         </p>
 
         <div
@@ -3535,7 +3535,7 @@
     let accentColor = "#ff4d6d";
     let profileName = "YOUR NAME";
     let profileAvatarData = "";
-    const APP_VERSION = "1.4.0";
+    const APP_VERSION = "1.4.2";
 
     let currentPhrase = "";
     let currentPhraseWords = [];
@@ -3645,10 +3645,12 @@
     };
 
     let roundsPlayed = 0;
+    let rankedRoundsPlayed = 0;
     let bestAccuracy = 0;
     let bestWpm = 0;
     let totalMistakes = 0;
-    let totalAccuracy = 0; // sum of every round's accuracy %, used to compute the average for ranking
+    let totalAccuracy = 0;
+    let totalRankedScore = 0; // No Mercy scores only
 
     function getModeStatsKey(lang, mode, level) {
         return lang + "_" + mode + "_" + level;
@@ -5567,6 +5569,10 @@
         roundsPlayed++;
         totalMistakes += mistakeCount;
         totalAccuracy += recordedScore;
+        if (difficulty === "nomercy") {
+            rankedRoundsPlayed++;
+            totalRankedScore += recordedScore;
+        }
 
         bestAccuracy =
             Math.max(bestAccuracy,recordedScore);
@@ -6859,6 +6865,9 @@
                 String(roundsPlayed)
             );
 
+            localStorage.setItem("kw_ranked_rounds", String(rankedRoundsPlayed));
+            localStorage.setItem("kw_ranked_score_total", String(totalRankedScore));
+
             localStorage.setItem(
                 "kw_best_accuracy",
                 String(bestAccuracy)
@@ -6920,6 +6929,9 @@
                         "kw_rounds"
                     )
                 ) || 0;
+
+            rankedRoundsPlayed = parseInt(localStorage.getItem("kw_ranked_rounds")) || 0;
+            totalRankedScore = parseFloat(localStorage.getItem("kw_ranked_score_total")) || 0;
 
             bestAccuracy =
                 parseInt(
@@ -7274,6 +7286,10 @@
             : 0;
     }
 
+    function getAverageRankScore() {
+        return rankedRoundsPlayed > 0 ? totalRankedScore / rankedRoundsPlayed : 0;
+    }
+
     /*
      * Single source of truth for rank requirements, ordered from
      * highest to lowest. Used by getWarriorRank() AND by the rank
@@ -7290,19 +7306,19 @@
     /*
      * Rank now rewards volume AND consistency, not a single lucky
      * best-ever round: it takes both enough rounds played and a
-     * high enough average recorded score across all of them.
+     * high enough average time-adjusted score across No Mercy rounds.
      */
     function getWarriorRank() {
 
-        if (roundsPlayed === 0) {
+        if (rankedRoundsPlayed === 0) {
             return "UNTESTED WARRIOR";
         }
 
-        const avgAccuracy = getAverageAccuracy();
+        const avgAccuracy = getAverageRankScore();
 
         for (let i = 0; i < RANK_TIERS.length; i++) {
             const tier = RANK_TIERS[i];
-            if (roundsPlayed >= tier.rounds && avgAccuracy >= tier.accuracy) {
+            if (rankedRoundsPlayed >= tier.rounds && avgAccuracy >= tier.accuracy) {
                 return tier.name;
             }
         }
@@ -7349,7 +7365,7 @@
 
     function renderRankInfo() {
 
-        const avgAccuracy = getAverageAccuracy();
+        const avgAccuracy = getAverageRankScore();
         const currentRank = getWarriorRank();
 
         // Progress note: how far from the next rank up.
@@ -7367,14 +7383,14 @@
                 nextTier = idx > 0 ? RANK_TIERS[idx - 1] : null;
             }
 
-            if (roundsPlayed === 0) {
+            if (rankedRoundsPlayed === 0) {
                 progressEl.textContent =
-                    "Play your first round to start ranking up.";
+                    "Complete your first No Mercy round to start ranking up.";
             } else if (!nextTier) {
                 progressEl.textContent =
                     "You've hit the top rank: KEYBOARD OVERLORD. Keep your average score up to hold it.";
             } else {
-                const roundsNeeded = Math.max(0, nextTier.rounds - roundsPlayed);
+                const roundsNeeded = Math.max(0, nextTier.rounds - rankedRoundsPlayed);
                 const accuracyNeeded = Math.max(0, nextTier.accuracy - avgAccuracy);
 
                 const needs = [];
