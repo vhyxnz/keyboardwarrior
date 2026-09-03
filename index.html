@@ -939,6 +939,8 @@
         }
         .mirror-keyboard { display:flex; flex-direction:column; gap:4px; margin-top:5px; touch-action:none; }
         .mirror-keyboard-row { display:flex; gap:4px; }
+        .mirror-keyboard-row:nth-child(2) { margin-inline:5%; }
+        .mirror-key.function { flex:1.5; font-size:10px; }
         .mirror-key {
             flex:1; min-width:0; min-height:34px; padding:3px 0; border:1px solid var(--border); border-radius:6px;
             background:var(--panel2); color:var(--text); font-size:12px; font-weight:900; touch-action:none;
@@ -2906,7 +2908,7 @@
                         <span class="mirror-player-status" id="mirrorPlayer1Status">GET READY</span>
                     </div>
                     <div class="mirror-phrase" id="mirrorPhrase1"></div>
-                    <textarea class="mirror-input" id="mirrorInput1" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Player 1 types here..."></textarea>
+                    <textarea class="mirror-input" id="mirrorInput1" readonly inputmode="none" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Use the keyboard below..." aria-label="Player 1 typed text"></textarea>
                     <div class="mirror-keyboard" id="mirrorKeyboard1" aria-label="Player 1 touch keyboard"></div>
                     <div class="mirror-progress"><div class="mirror-progress-bar" id="mirrorProgress1"></div></div>
                 </div>
@@ -2920,7 +2922,7 @@
                     <span class="mirror-player-status" id="mirrorPlayer2Status">GET READY</span>
                 </div>
                 <div class="mirror-phrase" id="mirrorPhrase2"></div>
-                <textarea class="mirror-input" id="mirrorInput2" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Player 2 types here..."></textarea>
+                <textarea class="mirror-input" id="mirrorInput2" readonly inputmode="none" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Use the keyboard below..." aria-label="Player 2 typed text"></textarea>
                 <div class="mirror-keyboard" id="mirrorKeyboard2" aria-label="Player 2 touch keyboard"></div>
                 <div class="mirror-progress"><div class="mirror-progress-bar" id="mirrorProgress2"></div></div>
             </div>
@@ -3858,7 +3860,7 @@
     let profileAvatarData = "";
     let profileCardStyle = "classic";
     let currentAppProfile = "user";
-    const APP_VERSION = "2.3.2";
+    const APP_VERSION = "2.3.3";
 
     let currentPhrase = "";
     let currentPhraseWords = [];
@@ -5599,14 +5601,23 @@
         });
     }
 
+    const mirrorKeyboardState = { 1: { symbols: false, shift: false }, 2: { symbols: false, shift: false } };
+
     function buildMirrorKeyboard(player) {
         const keyboard = document.getElementById("mirrorKeyboard" + player);
-        if (!keyboard || keyboard.childElementCount) return;
-        const rows = [
+        if (!keyboard) return;
+        keyboard.replaceChildren();
+        const state = mirrorKeyboardState[player];
+        const rows = state.symbols ? [
+            Array.from("1234567890"),
+            ["@", "#", "$", "%", "&", "*", "(", ")", "/"],
+            ["!", "?", "'", '"', ":", ";", "-", "BACK"],
+            ["SYMBOLS", ",", "SPACE", "."]
+        ] : [
             Array.from("qwertyuiop"),
             Array.from("asdfghjkl"),
-            Array.from("zxcvbnm"),
-            ["'", ",", ".", "?", "!", ":", "-", "SPACE", "BACK"]
+            ["SHIFT", ...Array.from("zxcvbnm"), "BACK"],
+            ["SYMBOLS", ",", "SPACE", "."]
         ];
         rows.forEach(function(rowKeys) {
             const row = document.createElement("div");
@@ -5614,13 +5625,14 @@
             rowKeys.forEach(function(key) {
                 const button = document.createElement("button");
                 button.type = "button";
-                button.className = "mirror-key" + (key === "SPACE" ? " space" : key === "BACK" ? " back" : "");
-                button.textContent = key === "SPACE" ? "SPACE" : key === "BACK" ? "⌫" : key.toUpperCase();
+                button.className = "mirror-key" + (key === "SPACE" ? " space" : key === "BACK" ? " back" : ["SHIFT", "SYMBOLS"].includes(key) ? " function" : "");
+                button.textContent = key === "SPACE" ? "space" : key === "BACK" ? "⌫" : key === "SHIFT" ? "⇧" : key === "SYMBOLS" ? (state.symbols ? "ABC" : "123") : state.shift ? key.toUpperCase() : key;
                 button.setAttribute("aria-label", key === "BACK" ? "Backspace" : key);
+                if (key === "SHIFT") button.setAttribute("aria-pressed", String(state.shift));
                 button.addEventListener("pointerdown", function(event) {
                     event.preventDefault();
-                    mirrorTapKey(player, key);
                 });
+                button.addEventListener("click", function() { mirrorTapKey(player, key); });
                 row.appendChild(button);
             });
             keyboard.appendChild(row);
@@ -5630,6 +5642,14 @@
     function mirrorTapKey(player, key) {
         const input = document.getElementById("mirrorInput" + player);
         if (!input || input.disabled || mirrorMatchResults[player - 1]) return;
+        const state = mirrorKeyboardState[player];
+        if (key === "SHIFT" || key === "SYMBOLS") {
+            if (key === "SHIFT") state.shift = !state.shift;
+            else state.symbols = !state.symbols;
+            buildMirrorKeyboard(player);
+            return;
+        }
+        if (state.shift && key.length === 1) key = key.toUpperCase();
         if (key === "BACK") {
             input.value = input.value.slice(0, -1);
         } else if (key === "SPACE") {
@@ -5662,6 +5682,9 @@
             if (phrase) phrase.textContent = mirrorMatchPhrase;
             buildMirrorKeyboard(player);
             if (input) {
+                const touchDevice = navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches;
+                input.readOnly = touchDevice;
+                input.inputMode = touchDevice ? "none" : "text";
                 input.value = "";
                 input.disabled = true;
                 input.oninput = function() { updateMirrorPlayer(player); };
@@ -9657,7 +9680,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=18", { updateViaCache: "none" })
+                .register("./sw.js?v=19", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
