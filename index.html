@@ -366,10 +366,43 @@
         }
 
         #homeScreen .home-stats-icon {
-            display: inline-block;
+            display: inline-flex;
+            width: 20px;
+            height: 20px;
             margin-right: 8px;
-            font-size: 19px;
-            vertical-align: -1px;
+            vertical-align: -4px;
+        }
+
+        #homeScreen .home-stats-icon svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+
+        .card-style-picker {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .card-style-btn {
+            min-height: 42px;
+            padding: 8px 5px;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            background: var(--panel2);
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: .5px;
+        }
+
+        .card-style-btn.selected {
+            border-color: var(--accent);
+            background: color-mix(in srgb, var(--accent) 13%, var(--panel2));
+            color: var(--accent);
         }
 
         @media(max-width:380px) {
@@ -1860,10 +1893,11 @@
         }
 
         #homeScreen .home-stats-icon {
-            display: inline-block;
+            display: inline-flex;
+            width: 20px;
+            height: 20px;
             margin-right: 8px;
-            font-size: 19px;
-            vertical-align: -1px;
+            vertical-align: -4px;
         }
 
         @media(max-width:380px) {
@@ -2388,7 +2422,9 @@
                     type="button"
                     class="home-view-stats"
                     onclick="navigate('stats')">
-                <span class="home-stats-icon">▥</span>
+                <span class="home-stats-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M4 19h16v2H2V3h2v16Zm3-2H5v-6h2v6Zm4 0H9V7h2v10Zm4 0h-2V9h2v8Zm4 0h-2V4h2v13Z"/></svg>
+                </span>
                 VIEW STATS
             </button>
 
@@ -3246,6 +3282,11 @@
             <div class="share-preview" id="sharePreview">
                 Complete a round to generate your profile card.
             </div>
+            <div class="card-style-picker" role="group" aria-label="Profile card design">
+                <button type="button" class="card-style-btn selected" data-card-style="classic" onclick="selectProfileCardStyle('classic')">CLASSIC</button>
+                <button type="button" class="card-style-btn" data-card-style="neon" onclick="selectProfileCardStyle('neon')">NEON GRID</button>
+                <button type="button" class="card-style-btn" data-card-style="mono" onclick="selectProfileCardStyle('mono')">MONO ELITE</button>
+            </div>
             <button
                     type="button"
                     class="share-btn"
@@ -3582,7 +3623,8 @@
     let accentColor = "#ff4d6d";
     let profileName = "YOUR NAME";
     let profileAvatarData = "";
-    const APP_VERSION = "1.5.0";
+    let profileCardStyle = "classic";
+    const APP_VERSION = "1.6.0";
 
     let currentPhrase = "";
     let currentPhraseWords = [];
@@ -7109,6 +7151,11 @@
                 accentColor = savedAccent;
             }
 
+            const savedCardStyle = localStorage.getItem("kw_profile_card_style");
+            if (["classic", "neon", "mono"].indexOf(savedCardStyle) !== -1) {
+                profileCardStyle = savedCardStyle;
+            }
+
         } catch(error) {}
 
     }
@@ -7692,6 +7739,28 @@
                 generateShareText();
         }
 
+        document.querySelectorAll(".card-style-btn").forEach(function(button) {
+            button.classList.toggle("selected", button.dataset.cardStyle === profileCardStyle);
+            button.setAttribute("aria-pressed", button.dataset.cardStyle === profileCardStyle ? "true" : "false");
+        });
+
+    }
+
+    function selectProfileCardStyle(style) {
+        if (["classic", "neon", "mono"].indexOf(style) === -1) return;
+        profileCardStyle = style;
+        generatedCanvas = null;
+        generatedImageData = "";
+        try { localStorage.setItem("kw_profile_card_style", profileCardStyle); } catch(error) {}
+        updateSharePreview();
+
+        const previewCard = document.getElementById("imagePreviewCard");
+        if (previewCard && previewCard.classList.contains("show")) {
+            generatedCanvas = createProfileCard();
+            generatedImageData = generatedCanvas.toDataURL("image/png");
+            const preview = document.getElementById("imagePreview");
+            if (preview) preview.src = generatedImageData;
+        }
     }
 
 
@@ -7882,11 +7951,18 @@
         canvas.height = height;
 
         const ctx = canvas.getContext("2d");
-        const accent = /^#[0-9A-Fa-f]{6}$/.test(accentColor) ? accentColor : "#ff4d6d";
+        const savedAccent = /^#[0-9A-Fa-f]{6}$/.test(accentColor) ? accentColor : "#ff4d6d";
+        const accent = profileCardStyle === "neon"
+            ? "#2de2e6"
+            : profileCardStyle === "mono" ? "#e7e9ee" : savedAccent;
         const white = "#f8f9fc";
-        const muted = "#9299aa";
-        const panel = "rgba(255,255,255,.055)";
-        const border = "rgba(255,255,255,.105)";
+        const muted = profileCardStyle === "neon" ? "#a9b5d6" : "#9299aa";
+        const panel = profileCardStyle === "neon"
+            ? "rgba(15,25,58,.78)"
+            : profileCardStyle === "mono" ? "rgba(255,255,255,.035)" : "rgba(255,255,255,.055)";
+        const border = profileCardStyle === "neon"
+            ? "rgba(45,226,230,.30)"
+            : profileCardStyle === "mono" ? "rgba(255,255,255,.20)" : "rgba(255,255,255,.105)";
         const english = languageStats.english || createDefaultLanguageStats();
         const filipino = languageStats.filipino || createDefaultLanguageStats();
         const activeLanguage = language === "filipino" ? filipino : english;
@@ -7929,9 +8005,19 @@
 
         /* BACKGROUND */
         const bg = ctx.createLinearGradient(0, 0, width, height);
-        bg.addColorStop(0, "#090b10");
-        bg.addColorStop(.55, "#12151d");
-        bg.addColorStop(1, "#0b0d12");
+        if (profileCardStyle === "neon") {
+            bg.addColorStop(0, "#05051a");
+            bg.addColorStop(.52, "#111036");
+            bg.addColorStop(1, "#090518");
+        } else if (profileCardStyle === "mono") {
+            bg.addColorStop(0, "#070707");
+            bg.addColorStop(.55, "#191919");
+            bg.addColorStop(1, "#050505");
+        } else {
+            bg.addColorStop(0, "#090b10");
+            bg.addColorStop(.55, "#12151d");
+            bg.addColorStop(1, "#0b0d12");
+        }
         ctx.fillStyle = bg;
         ctx.fillRect(0, 0, width, height);
 
@@ -7946,6 +8032,28 @@
         glowB.addColorStop(1, "transparent");
         ctx.fillStyle = glowB;
         ctx.fillRect(0, 700, 520, 650);
+
+        if (profileCardStyle === "neon") {
+            ctx.strokeStyle = "rgba(45,226,230,.10)";
+            ctx.lineWidth = 1;
+            for (let x = -500; x < width + 500; x += 75) {
+                ctx.beginPath();
+                ctx.moveTo(width / 2, 760);
+                ctx.lineTo(x, height);
+                ctx.stroke();
+            }
+            for (let y = 790; y < height; y += 58) {
+                ctx.beginPath();
+                ctx.moveTo(0, y);
+                ctx.lineTo(width, y);
+                ctx.stroke();
+            }
+            const neonGlow = ctx.createRadialGradient(950, 250, 0, 950, 250, 500);
+            neonGlow.addColorStop(0, "rgba(255,45,149,.28)");
+            neonGlow.addColorStop(1, "transparent");
+            ctx.fillStyle = neonGlow;
+            ctx.fillRect(430, 0, 650, 700);
+        }
 
         ctx.fillStyle = "rgba(255,255,255,.022)";
         for (let x = 30; x < width; x += 40) {
@@ -7985,7 +8093,10 @@
         ctx.fillText("KEYBOARD WARRIOR", 205, 102);
         ctx.fillStyle = muted;
         ctx.font = "800 18px Arial";
-        ctx.fillText("PLAYER CARD  •  TYPE FAST. ARGUE RESPONSIBLY.", 207, 137);
+        const cardEdition = profileCardStyle === "neon"
+            ? "NEON GRID"
+            : profileCardStyle === "mono" ? "MONO ELITE" : "CLASSIC";
+        ctx.fillText(cardEdition + " CARD  •  TYPE FAST. ARGUE RESPONSIBLY.", 207, 137);
 
         ctx.fillStyle = accent + "24";
         roundRect(ctx, 825, 84, 195, 48, 24);
@@ -8180,7 +8291,7 @@
         if (!generatedImageData) return;
 
         const status = document.getElementById("exportStatus");
-        const filename = "Keyboard_Warrior_Stats_" +
+        const filename = "Keyboard_Warrior_" + profileCardStyle + "_Card_" +
             new Date().toISOString().replace(/[:.]/g, "-") + ".png";
 
         try {
@@ -8463,7 +8574,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=3", { updateViaCache: "none" })
+                .register("./sw.js?v=4", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
