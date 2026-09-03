@@ -3858,7 +3858,7 @@
     let profileAvatarData = "";
     let profileCardStyle = "classic";
     let currentAppProfile = "user";
-    const APP_VERSION = "2.3.1";
+    const APP_VERSION = "2.3.2";
 
     let currentPhrase = "";
     let currentPhraseWords = [];
@@ -5812,36 +5812,55 @@
 
     function getArcadeWords() {
         const arcadeWordPools = {
-            english: [
-                "action","advance","alert","armor","arrow","attack","balance","battle","blaze","bold",
-                "boost","brave","burst","charge","chase","clever","clutch","combo","command","control",
-                "dash","defend","defense","dodge","energy","escape","fast","flame","focus","force",
-                "ghost","glory","guard","hammer","hero","impact","jump","keyboard","laser","level",
-                "lightning","master","motion","power","protect","quick","rally","react","ready","reflex",
-                "rhythm","rocket","rush","score","shadow","shield","skill","spark","speed","spirit",
-                "sprint","streak","strike","strong","survive","swift","target","thunder","timing","tower",
-                "track","trigger","turbo","victory","watch","weapon","winner","words","accurate","agile",
-                "bright","courage","critical","danger","dynamic","epic","fierce","rapid","rescue","steady",
-                "tactic","unstoppable","vigilant","warrior","whirlwind","zenith","arena","champion","fortress","mission"
-            ],
-            filipino: [
-                "agila","aksyon","alon","apoy","aral","araw","bagyo","bait","balita","bansa",
-                "bantay","bato","bayani","bilis","bituin","buhay","bundok","daan","dagat","depensa",
-                "dilim","diwa","gabi","galing","galaw","gawa","gilas","ginto","guro","hamon",
-                "handa","hangin","husay","ilaw","ingat","isip","iwas","kaibigan","kalaban","kidlat",
-                "laban","lakad","lakas","lakbay","langit","liwanag","ligtas","linaw","linis","loob",
-                "mahal","mabilis","mata","mundo","oras","panalo","payapa","pindot","puso","sagot",
-                "salita","saya","sigla","sikap","sinag","sipag","sulat","susi","takbo","tahimik",
-                "talino","tanong","tapang","tibay","tinig","tiyaga","tulong","tumpak","ulan","umaga",
-                "wasto","wika","yaman","gising","laya","pursigi","maliksi","matatag","sigaw","tanglaw"
-            ]
+            english: {
+                friendly: [
+                    "achieve","admire","balance","believe","bloom","bright","calm","care","celebrate","cheer",
+                    "clever","comfort","courage","create","dream","encourage","energy","focus","friend","gentle",
+                    "glow","grateful","grow","happy","harmony","help","honest","hope","inspire","joy",
+                    "kindness","learn","light","listen","mindful","patience","peace","practice","progress","proud",
+                    "ready","respect","smile","steady","strong","support","thrive","together","trust","uplift",
+                    "victory","warm","welcome","wisdom","brave","champion","confident","friendly","generous","healthy",
+                    "improve","positive","refresh","rescue","safe","skill","spark","sunshine","teamwork","wonder"
+                ],
+                almighty: [
+                    "ambush","armor","attack","battle","blaze","brutal","burst","chaos","charge","clash",
+                    "command","conquer","critical","crush","danger","destroy","doom","fierce","flame","force",
+                    "fury","havoc","hostile","hunt","impact","laser","menace","merciless","nightmare","power",
+                    "rage","rampage","rival","ruthless","savage","shadow","shock","smash","storm","strike",
+                    "target","threat","thunder","toxic","trigger","turbo","vengeance","vicious","warlord","weapon",
+                    "wreck","aggressive","carnage","defeat","dominant","fearless","ferocious","onslaught","punish","rebel",
+                    "riot","scorch","siege","slayer","terror","unstoppable","warrior","whirlwind","wrath","zero"
+                ]
+            },
+            filipino: {
+                friendly: [
+                    "alaga","aliw","aral","araw","bait","bayan","biyaya","buhay","buti","diwa",
+                    "galang","galing","galak","gawa","ginhawa","guro","halaga","handa","hangin","husay",
+                    "ilaw","ingat","isip","kaibigan","kalinga","lakad","lakas","lakbay","langit","ligaya",
+                    "liwanag","ligtas","linaw","linis","mahal","maliksi","matatag","ngiti","panalo","payapa",
+                    "puso","sagot","salamat","salita","saya","sigla","sikap","sinag","sipag","sulat",
+                    "susi","tahimik","talino","tanglaw","tapang","tibay","tinig","tiwala","tiyaga","tulong",
+                    "tumpak","umaga","wasto","wika","yaman","laya","pursigi","unlad","damayan","pagkakaisa"
+                ],
+                almighty: [
+                    "aksyon","atake","apoy","bagsik","bagyo","bangis","banta","bantay","baril","bilis",
+                    "depensa","dilim","galit","ganti","gilas","gising","gulo","hamon","handa","harang",
+                    "hataw","higanti","iwas","kalaban","kidlat","laban","lakas","lusob","mabangis","mabilis",
+                    "panganib","pigil","pindot","puwersa","salakay","siklab","sigaw","sindak","sugod","takbo",
+                    "talo","tapang","tibay","tudla","tumba","wasak","agila","bakbakan","dagundong","gera",
+                    "lagablab","mandirigma","matindi","ragasa","sakop","sibat","suntok","tanggol","tira","tulin",
+                    "unos","bagsakan","banggaan","hamunin","puksain","sumalakay","tumakas","umigtad","wagi","paghahari"
+                ]
+            }
         };
-        return arcadeWordPools[language] || arcadeWordPools.english;
+        const languagePools = arcadeWordPools[language] || arcadeWordPools.english;
+        return languagePools[attitude] || languagePools.friendly;
     }
 
     function getNextArcadeWord() {
-        if (arcadeDeckLanguage !== language || !arcadeWordDeck.length) {
-            arcadeDeckLanguage = language;
+        const deckIdentity = language + ":" + attitude;
+        if (arcadeDeckLanguage !== deckIdentity || !arcadeWordDeck.length) {
+            arcadeDeckLanguage = deckIdentity;
             arcadeWordDeck = getArcadeWords().slice();
             for (let i = arcadeWordDeck.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -9638,7 +9657,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=17", { updateViaCache: "none" })
+                .register("./sw.js?v=18", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
