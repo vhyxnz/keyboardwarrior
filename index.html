@@ -3267,8 +3267,9 @@
                 <div class="race-lane"><div class="race-lane-label"><span>YOU</span><span id="ghostPlayerPercent">0%</span></div><div class="race-track"><div class="race-progress" id="ghostPlayerProgress"></div></div></div>
                 <div class="race-lane"><div class="race-lane-label"><span>GHOST</span><span id="ghostReplayPercent">0%</span></div><div class="race-track"><div class="race-progress ghost" id="ghostReplayProgress"></div></div></div>
                 <input class="arcade-input" id="ghostRaceInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the phrase to race…">
+                <button type="button" class="action-btn secondary-btn" style="margin-top:10px;" onclick="returnToGhostPhraseSelection()">CHOOSE ANOTHER PHRASE</button>
             </div>
-            <div class="arcade-actions"><button type="button" class="action-btn secondary-btn" onclick="endArcadeMode()">BACK</button></div>
+            <div class="arcade-actions"><button type="button" class="action-btn secondary-btn" onclick="endArcadeMode()">BACK TO MODES</button></div>
         </div>
     </section>
 
@@ -3835,7 +3836,7 @@
     let profileAvatarData = "";
     let profileCardStyle = "classic";
     let currentAppProfile = "user";
-    const APP_VERSION = "2.1.1";
+    const APP_VERSION = "2.1.2";
 
     let currentPhrase = "";
     let currentPhraseWords = [];
@@ -5977,6 +5978,11 @@
         document.getElementById("ghostPlayerProgress").style.width = percent + "%";
         document.getElementById("ghostPlayerPercent").textContent = percent + "%";
         if (input.value === currentPhrase) finishGhostRace();
+    }
+
+    function returnToGhostPhraseSelection() {
+        clearArcadeRuntime();
+        startGhostRace();
     }
 
     function finishGhostRace() {
@@ -9439,7 +9445,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=13", { updateViaCache: "none" })
+                .register("./sw.js?v=14", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);

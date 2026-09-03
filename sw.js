@@ -1,8 +1,8 @@
-const CACHE_NAME = "keyboard-warrior-pwa-v13";
+const CACHE_NAME = "keyboard-warrior-pwa-v14";
 const APP_SHELL = [
     "./",
     "./index.html",
-    "./index.html?v=13",
+    "./index.html?v=14",
     "./manifest.webmanifest",
     "./KWLogo-v2.png",
     "./icon-180.png",
