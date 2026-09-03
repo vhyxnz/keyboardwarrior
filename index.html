@@ -173,6 +173,65 @@
             display: block;
         }
 
+        body.profile-select .bottom-nav { display: none; }
+
+        .profile-select-screen {
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding-bottom: 28px;
+            place-content: center;
+        }
+
+        .profile-select-screen.active { display: grid; }
+
+        .profile-select-wrap { width: 100%; max-width: 430px; margin: auto; }
+        .profile-select-logo { width: min(74vw, 260px); display: block; margin: 0 auto 12px; }
+        .profile-select-title { margin: 0; text-align: center; font-size: 27px; font-weight: 1000; }
+        .profile-select-subtitle { margin: 7px 0 22px; color: var(--muted); text-align: center; }
+        .profile-choice-list { display: grid; gap: 12px; }
+        .profile-choice {
+            width: 100%; min-height: 105px; padding: 17px;
+            display: grid; grid-template-columns: 58px 1fr 22px; gap: 14px; align-items: center;
+            border: 1px solid var(--border); border-radius: 18px;
+            background: var(--panel); color: var(--text); text-align: left;
+        }
+        .profile-choice:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); }
+        .profile-choice-icon {
+            width: 58px; height: 58px; display: grid; place-items: center;
+            border-radius: 17px; background: color-mix(in srgb, var(--accent) 14%, var(--panel2)); color: var(--accent);
+        }
+        .profile-choice-icon svg { width: 31px; height: 31px; fill: currentColor; }
+        .profile-choice-icon img { width: 100%; height: 100%; display: none; object-fit: cover; }
+        .profile-choice-icon.has-image { padding: 0; overflow: hidden; background: var(--panel2); }
+        .profile-choice-icon.has-image img { display: block; }
+        .profile-choice-icon.has-image svg { display: none; }
+        .profile-choice strong { display: block; margin-bottom: 5px; font-size: 17px; }
+        .profile-choice small { display: block; color: var(--muted); font-size: 12px; line-height: 1.4; }
+        .profile-choice-arrow { color: var(--muted); font-size: 25px; }
+        .guest-session-note { margin-top: 14px; color: var(--muted); font-size: 11px; line-height: 1.45; text-align: center; }
+
+        .onboarding-card {
+            width: 100%; max-width: 420px; margin: auto; padding: 22px;
+            border: 1px solid var(--border); border-radius: 22px; background: var(--panel);
+        }
+        .onboarding-card h1 { margin: 0 0 7px; text-align: center; font-size: 25px; }
+        .onboarding-card > p { margin: 0 0 20px; color: var(--muted); font-size: 13px; line-height: 1.45; text-align: center; }
+        .onboarding-avatar {
+            width: 104px; height: 104px; margin: 0 auto 14px; display: grid; place-items: center; overflow: hidden;
+            border: 3px solid var(--accent); border-radius: 30px; background: var(--panel2); color: var(--accent);
+            font-size: 30px; font-weight: 1000;
+        }
+        .onboarding-avatar img { width: 100%; height: 100%; display: none; object-fit: cover; }
+        .onboarding-avatar.has-image img { display: block; }
+        .onboarding-avatar.has-image span { display: none; }
+        .onboarding-avatar-btn { width: 100%; margin-bottom: 17px; }
+        .onboarding-label { display: block; margin-bottom: 7px; font-size: 11px; font-weight: 1000; letter-spacing: 1px; }
+        #newWarriorNameInput {
+            width: 100%; min-height: 48px; padding: 0 14px; border: 1px solid var(--border); border-radius: 12px;
+            background: rgba(8,10,15,.58); color: var(--text); font-weight: 800;
+        }
+        .onboarding-error { min-height: 18px; margin: 9px 0; color: var(--red); font-size: 12px; font-weight: 800; }
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -405,6 +464,42 @@
             color: var(--accent);
         }
 
+        .arcade-shell { max-width: 500px; margin: auto; }
+        .arcade-hud { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+        .arcade-hud-item { padding: 10px 7px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel); text-align: center; }
+        .arcade-hud-item strong { display: block; color: var(--accent); font-size: 20px; }
+        .arcade-hud-item span { color: var(--muted); font-size: 9px; font-weight: 900; letter-spacing: .8px; }
+        .arcade-arena { position: relative; height: 390px; overflow: hidden; border: 1px solid var(--border); border-radius: 20px; background: linear-gradient(#10131c,#171323); box-shadow: inset 0 -40px 70px rgba(255,77,109,.08); }
+        .arcade-grid { position: absolute; inset: 0; opacity: .12; background-image: linear-gradient(var(--accent) 1px,transparent 1px),linear-gradient(90deg,var(--accent) 1px,transparent 1px); background-size: 36px 36px; }
+        .arcade-base { position: absolute; left: 0; right: 0; bottom: 0; height: 38px; display: grid; place-items: center; border-top: 2px solid var(--accent); background: color-mix(in srgb,var(--accent) 16%,#0d0f14); color: var(--accent); font-size: 10px; font-weight: 1000; letter-spacing: 2px; }
+        .word-enemy { position: absolute; transform: translateX(-50%); padding: 8px 12px; border: 1px solid var(--accent); border-radius: 10px; background: #10131c; color: white; font-size: 15px; font-weight: 900; box-shadow: 0 0 18px color-mix(in srgb,var(--accent) 25%,transparent); }
+        .survival-word { position: absolute; inset: 70px 20px auto; text-align: center; color: white; font-size: clamp(34px,12vw,62px); font-weight: 1000; text-shadow: 0 0 25px color-mix(in srgb,var(--accent) 70%,transparent); }
+        .survival-level { position: absolute; inset: 155px 20px auto; color: var(--muted); font-size: 11px; font-weight: 900; text-align: center; letter-spacing: 2px; }
+        .arcade-time-track { position: absolute; left: 28px; right: 28px; top: 210px; height: 10px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.08); }
+        .arcade-time-bar { width: 100%; height: 100%; background: linear-gradient(90deg,var(--red),var(--yellow),var(--green)); transform-origin: left; }
+        .arcade-input { width: 100%; min-height: 52px; margin-top: 12px; padding: 0 16px; border: 2px solid var(--accent); border-radius: 14px; background: var(--panel); color: white; font-size: 18px; font-weight: 900; text-align: center; }
+        .arcade-actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
+        .ghost-course { padding: 18px; border: 1px solid var(--border); border-radius: 18px; background: var(--panel); }
+        .ghost-course[hidden], .ghost-phrase-selection[hidden] { display: none; }
+        .ghost-phrase-selection { display: grid; gap: 9px; }
+        .ghost-phrase-choice {
+            width: 100%; padding: 14px; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 12px; align-items: center;
+            border: 1px solid var(--border); border-radius: 14px; background: var(--panel); color: var(--text); text-align: left;
+        }
+        .ghost-phrase-choice:hover { border-color: var(--accent); background: color-mix(in srgb,var(--accent) 8%,var(--panel)); }
+        .ghost-random-choice { border-color: color-mix(in srgb,var(--accent) 60%,var(--border)); background: color-mix(in srgb,var(--accent) 10%,var(--panel)); }
+        .ghost-phrase-choice strong { display: block; font-size: 13px; line-height: 1.4; }
+        .ghost-phrase-choice small { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; font-weight: 800; }
+        .ghost-time-badge { min-width: 78px; padding: 8px 9px; border-radius: 10px; background: color-mix(in srgb,var(--accent) 12%,var(--panel2)); color: var(--accent); font-size: 12px; font-weight: 1000; text-align: center; }
+        .ghost-phrase { margin-bottom: 22px; font-size: 21px; font-weight: 800; line-height: 1.55; }
+        .race-lane { margin: 14px 0; }
+        .race-lane-label { display: flex; justify-content: space-between; margin-bottom: 6px; color: var(--muted); font-size: 10px; font-weight: 900; }
+        .race-track { height: 13px; overflow: hidden; border-radius: 99px; background: var(--panel2); }
+        .race-progress { width: 0; height: 100%; border-radius: inherit; background: var(--accent); transition: width .08s linear; }
+        .race-progress.ghost { background: #9b7bff; opacity: .75; }
+        .arcade-result-card { margin-top: 24px; padding: 24px; border: 1px solid var(--border); border-radius: 20px; background: var(--panel); text-align: center; }
+        .arcade-result-score { margin: 12px 0; color: var(--accent); font-size: 55px; font-weight: 1000; }
+
         @media(max-width:380px) {
             #homeScreen {
                 padding: 12px 14px 24px;
@@ -520,11 +615,16 @@
 
         .special-mode-slide .special-mode-symbol {
             display: block;
+            width: 48px;
+            height: 48px;
             margin-bottom: 12px;
             color: var(--accent);
-            font-size: 46px;
             line-height: 1;
             filter: drop-shadow(0 7px 13px color-mix(in srgb, var(--accent) 35%, transparent));
+        }
+        .special-mode-slide .special-mode-symbol svg {
+            width: 100%; height: 100%; display: block; fill: none; stroke: currentColor;
+            stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
         }
 
         .special-mode-slide strong {
@@ -2392,16 +2492,59 @@
             .phrase-card { padding: 16px; }
         }
 
+        /* The carousel checkmark floats independently; keep slide content centered. */
+        .special-mode-slide.selected {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+
     </style>
 </head>
 
-<body class="welcome">
+<body class="profile-select">
 
 <div class="app">
 
+    <section id="profileSelectScreen" class="screen profile-select-screen active">
+        <div class="profile-select-wrap">
+            <img class="profile-select-logo" src="KWLogo-v2.png" alt="Keyboard Warrior">
+            <h1 class="profile-select-title">Choose Your Profile</h1>
+            <p class="profile-select-subtitle">Who is entering the keyboard arena?</p>
+            <div class="profile-choice-list">
+                <button type="button" class="profile-choice" onclick="selectAppProfile('user')">
+                    <span class="profile-choice-icon" id="profileSelectUserAvatar" aria-hidden="true"><img id="profileSelectUserAvatarImage" alt=""><svg viewBox="0 0 24 24"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-5.33 0-8 2.67-8 6v2h16v-2c0-3.33-2.67-6-8-6Z"/></svg></span>
+                    <span><strong id="profileSelectUserName">WARRIOR PROFILE</strong><small>Permanent profile • stats and progress are saved</small></span>
+                    <span class="profile-choice-arrow" aria-hidden="true">›</span>
+                </button>
+                <button type="button" class="profile-choice" onclick="selectAppProfile('guest')">
+                    <span class="profile-choice-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Zm7.5 9v-1.5c0-3.35-3-5.5-7.5-5.5s-7.5 2.15-7.5 5.5V21h15Z"/></svg></span>
+                    <span><strong>GUEST</strong><small>Play without limits • session stats are temporary</small></span>
+                    <span class="profile-choice-arrow" aria-hidden="true">›</span>
+                </button>
+            </div>
+            <div class="guest-session-note">Guest stats reset whenever the app is reloaded or reopened.</div>
+        </div>
+    </section>
+
+    <section id="newWarriorScreen" class="screen profile-select-screen">
+        <div class="onboarding-card">
+            <h1>Create Your Warrior</h1>
+            <p>Choose the identity that will represent you in the keyboard arena.</p>
+            <div class="onboarding-avatar" id="newWarriorAvatarPreview">
+                <img id="newWarriorAvatarImage" alt="Selected profile image">
+                <span>KW</span>
+            </div>
+            <button type="button" class="backup-btn onboarding-avatar-btn" onclick="chooseProfileAvatar()">CHOOSE PROFILE IMAGE</button>
+            <label class="onboarding-label" for="newWarriorNameInput">WARRIOR NAME</label>
+            <input type="text" id="newWarriorNameInput" maxlength="24" autocomplete="nickname" placeholder="Enter your warrior name">
+            <div class="onboarding-error" id="newWarriorError" aria-live="polite"></div>
+            <button type="button" class="action-btn" onclick="completeNewWarriorProfile()">ENTER THE ARENA</button>
+        </div>
+    </section>
+
     <!-- HOME -->
 
-    <section id="homeScreen" class="home active">
+    <section id="homeScreen" class="home">
         <div class="home-reference">
 
             <div class="home-hero-visual single-logo">
@@ -2563,7 +2706,7 @@
                         aria-pressed="false"
                         id="freestyleOption"
                         onclick="selectFreestyle()">
-                    <span class="special-mode-symbol" aria-hidden="true">✍</span>
+                    <span class="special-mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 20 4.2-1 10.9-10.9a2.1 2.1 0 0 0-3-3L5.2 16 4 20Z"/><path d="m14.8 6.4 2.8 2.8M4 20h6"/></svg></span>
                     <strong>Freestyle</strong>
                     <span>No fixed phrase. No difficulty. Your writing, your rules.</span>
                 </button>
@@ -2574,7 +2717,7 @@
                         aria-pressed="false"
                         id="suddenDeathOption"
                         onclick="selectDifficulty('suddendeath')">
-                    <span class="special-mode-symbol" aria-hidden="true">☠</span>
+                    <span class="special-mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 10a7 7 0 1 1 14 0c0 3-1.4 4.6-3 5.5V20H8v-4.5C6.4 14.6 5 13 5 10Z"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/><path d="m10 15 2-2 2 2M10 20v-2m4 2v-2"/></svg></span>
                     <strong>Sudden Death</strong>
                     <span>No Backspace. One mistake and the round ends instantly. No second chances.</span>
                 </button>
@@ -2585,21 +2728,39 @@
                         aria-pressed="false"
                         id="comboOption"
                         onclick="selectDifficulty('combo')">
-                    <span class="special-mode-symbol" aria-hidden="true">🔥</span>
+                    <span class="special-mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9.5 14.5 7 17a3.5 3.5 0 0 0 5 5l3-3a3.5 3.5 0 0 0 0-5"/><path d="m14.5 9.5 2.5-2.5a3.5 3.5 0 0 0-5-5L9 5a3.5 3.5 0 0 0 0 5M8.5 15.5l7-7"/></svg></span>
                     <strong>Combo</strong>
                     <span>No Backspace. One mistake breaks your streak instantly. Chain correct words to build a combo that carries between rounds.</span>
                 </button>
 
                 <button type="button" class="option special-mode-slide special-mode-hidden" aria-pressed="false" id="madlibsOption" onclick="selectDifficulty('madlibs')">
-                    <span class="special-mode-symbol" aria-hidden="true">🎭</span>
+                    <span class="special-mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v9c0 4-3.6 7-8 7s-8-3-8-7V5Z"/><path d="M7 10c1-1 2-1 3 0m4 0c1-1 2-1 3 0m-8 5c2 1.5 4 1.5 6 0"/></svg></span>
                     <strong>Mad Libs Mode</strong>
                     <span>Replace the blanks with your wildest words. Speed and absurdity both count.</span>
                 </button>
 
                 <button type="button" class="option special-mode-slide special-mode-hidden" aria-pressed="false" id="reverseOption" onclick="selectDifficulty('reverse')">
-                    <span class="special-mode-symbol" aria-hidden="true">⇄</span>
+                    <span class="special-mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h14l-3-3m3 3-3 3M20 17H6l3 3m-3-3 3-3"/></svg></span>
                     <strong>Reverse Typer</strong>
                     <span>The phrase appears backwards. Untangle it and type the original forwards.</span>
+                </button>
+
+                <button type="button" class="option special-mode-slide special-mode-hidden" aria-pressed="false" id="ghostRaceOption" onclick="selectDifficulty('ghostrace')">
+                    <span class="special-mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 20V10a7 7 0 0 1 14 0v10l-3-2-2 2-2-2-2 2-2-2-3 2Z"/><circle cx="9" cy="10" r="1"/><circle cx="15" cy="10" r="1"/></svg></span>
+                    <strong>Ghost Race</strong>
+                    <span>Race live replays collected from your completed phrase-based modes.</span>
+                </button>
+
+                <button type="button" class="option special-mode-slide special-mode-hidden" aria-pressed="false" id="keyboardDefenseOption" onclick="selectDifficulty('defense')">
+                    <span class="special-mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 4 5v6c0 5 3.2 9 8 11 4.8-2 8-6 8-11V5l-8-3Z"/><path d="M8 11h8M9 14h6M9 8h1m2 0h1m2 0h1"/></svg></span>
+                    <strong>Keyboard Defense</strong>
+                    <span>Type incoming enemy words before they break through your base.</span>
+                </button>
+
+                <button type="button" class="option special-mode-slide special-mode-hidden" aria-pressed="false" id="typingSurvivalOption" onclick="selectDifficulty('survival')">
+                    <span class="special-mode-symbol" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 5.7a5.5 5.5 0 0 0-7.8 0L12 6.8l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 22l8.8-8.5a5.5 5.5 0 0 0 0-7.8Z"/><path d="M4 12h4l1.5-3 3 6 1.5-3h6"/></svg></span>
+                    <strong>Typing Survival</strong>
+                    <span>Clear an endless word stream as the time limit gets faster.</span>
                 </button>
 
                 </div>
@@ -2608,7 +2769,7 @@
 
             </div>
 
-            <div class="special-mode-position" id="specialModePosition" aria-live="polite">1 / 5</div>
+            <div class="special-mode-position" id="specialModePosition" aria-live="polite">1 / 8</div>
 
         </div>
 
@@ -3095,6 +3256,49 @@
     </section>
 
 
+    <!-- GHOST RACE -->
+    <section id="ghostRaceScreen" class="screen">
+        <div class="arcade-shell">
+            <div class="page-title">Ghost Race</div>
+            <p class="page-subtitle" id="ghostRaceHint">Choose a phrase and beat its recorded time.</p>
+            <div class="ghost-phrase-selection" id="ghostPhraseSelection"></div>
+            <div class="ghost-course" id="ghostRaceCourse" hidden>
+                <div class="ghost-phrase" id="ghostRacePhrase"></div>
+                <div class="race-lane"><div class="race-lane-label"><span>YOU</span><span id="ghostPlayerPercent">0%</span></div><div class="race-track"><div class="race-progress" id="ghostPlayerProgress"></div></div></div>
+                <div class="race-lane"><div class="race-lane-label"><span>GHOST</span><span id="ghostReplayPercent">0%</span></div><div class="race-track"><div class="race-progress ghost" id="ghostReplayProgress"></div></div></div>
+                <input class="arcade-input" id="ghostRaceInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type the phrase to race…">
+            </div>
+            <div class="arcade-actions"><button type="button" class="action-btn secondary-btn" onclick="endArcadeMode()">BACK</button></div>
+        </div>
+    </section>
+
+    <!-- KEYBOARD DEFENSE / TYPING SURVIVAL -->
+    <section id="arcadeModeScreen" class="screen">
+        <div class="arcade-shell">
+            <div class="page-title" id="arcadeModeTitle">Keyboard Defense</div>
+            <p class="page-subtitle" id="arcadeModeSubtitle"></p>
+            <div class="arcade-hud">
+                <div class="arcade-hud-item"><strong id="arcadeScore">0</strong><span>SCORE</span></div>
+                <div class="arcade-hud-item"><strong id="arcadeLives">♥♥♥</strong><span>LIVES</span></div>
+                <div class="arcade-hud-item"><strong id="arcadeLevel">1</strong><span>LEVEL</span></div>
+            </div>
+            <div class="arcade-arena" id="arcadeArena"><div class="arcade-grid"></div><div class="arcade-base" id="arcadeBase">KEYBOARD BASE</div></div>
+            <input class="arcade-input" id="arcadeInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type a target word…">
+            <div class="arcade-actions"><button type="button" class="action-btn secondary-btn" onclick="endArcadeMode()">END RUN</button></div>
+        </div>
+    </section>
+
+    <section id="arcadeResultScreen" class="screen">
+        <div class="arcade-shell arcade-result-card">
+            <div class="profile-kicker" id="arcadeResultKicker">RUN COMPLETE</div>
+            <div class="page-title" id="arcadeResultTitle">Keyboard Defense</div>
+            <div class="arcade-result-score" id="arcadeResultScore">0</div>
+            <p class="page-subtitle" id="arcadeResultDetails"></p>
+            <button type="button" class="action-btn" onclick="restartArcadeMode()">PLAY AGAIN</button>
+            <button type="button" class="action-btn secondary-btn" style="margin-top:9px;" onclick="showModeScreen()">CHANGE MODES</button>
+        </div>
+    </section>
+
     <!-- STATS -->
 
     <section id="statsScreen" class="screen">
@@ -3123,7 +3327,7 @@
 
             <div class="profile-info">
 
-                <div class="profile-kicker">
+                <div class="profile-kicker" id="profileKicker">
                     KEYBOARD WARRIOR PROFILE
                 </div>
 
@@ -3396,6 +3600,12 @@
         </div>
 
         <div class="setting">
+            <div class="setting-title">Active Profile</div>
+            <div class="setting-description" id="activeProfileDescription">Warrior profile • progress is saved.</div>
+            <button type="button" class="backup-btn" style="width:100%;" onclick="showProfileSelection()">SWITCH PROFILE</button>
+        </div>
+
+        <div class="setting">
             <div class="setting-title">Backup &amp; Transfer</div>
             <div class="setting-description">
                 Download your profile, stats, avatar, and preferences, then restore them on another device.
@@ -3624,7 +3834,8 @@
     let profileName = "YOUR NAME";
     let profileAvatarData = "";
     let profileCardStyle = "classic";
-    const APP_VERSION = "1.6.0";
+    let currentAppProfile = "user";
+    const APP_VERSION = "2.1.1";
 
     let currentPhrase = "";
     let currentPhraseWords = [];
@@ -3703,6 +3914,8 @@
             bestRankedScore: 0,
             bestWpm: 0,
             bestCombo: 0,
+            bestScore: 0,
+            bestTime: 0,
             totalMistakes: 0,
             totalTime: 0
         };
@@ -4104,9 +4317,109 @@
 
     }
 
+    function resetSessionProfileData() {
+        roundsPlayed = 0;
+        rankedRoundsPlayed = 0;
+        bestAccuracy = 0;
+        bestWpm = 0;
+        totalMistakes = 0;
+        totalAccuracy = 0;
+        totalRankedScore = 0;
+        bestComboEver = 0;
+        languageStats = {
+            english: createDefaultLanguageStats(),
+            filipino: createDefaultLanguageStats()
+        };
+        modeStats = {};
+    }
+
+    function showProfileSelection() {
+        stopTimer();
+        clearArcadeRuntime();
+        document.body.className = "profile-select";
+        const savedName = localStorage.getItem("kw_profile_name");
+        const savedAvatar = localStorage.getItem("kw_profile_avatar");
+        const nameEl = document.getElementById("profileSelectUserName");
+        const avatarEl = document.getElementById("profileSelectUserAvatar");
+        const avatarImage = document.getElementById("profileSelectUserAvatarImage");
+        if (nameEl) nameEl.textContent = savedName && savedName !== "YOUR NAME" ? savedName : "NEW WARRIOR";
+        const hasSavedAvatar = Boolean(savedAvatar && /^data:image\/(webp|png|jpeg);base64,/.test(savedAvatar));
+        if (avatarEl) avatarEl.classList.toggle("has-image", hasSavedAvatar);
+        if (avatarImage) avatarImage.src = hasSavedAvatar ? savedAvatar : "";
+        showScreen("profileSelectScreen");
+    }
+
+    function selectAppProfile(type) {
+        if (type !== "user" && type !== "guest") return;
+        currentAppProfile = type;
+        resetSessionProfileData();
+
+        if (type === "guest") {
+            profileName = "GUEST";
+            profileAvatarData = "";
+        } else {
+            profileName = "YOUR NAME";
+            profileAvatarData = "";
+            loadStats();
+            const savedName = localStorage.getItem("kw_profile_name");
+            if (!savedName || savedName === "YOUR NAME") {
+                document.body.className = "profile-select";
+                const nameInput = document.getElementById("newWarriorNameInput");
+                const error = document.getElementById("newWarriorError");
+                if (nameInput) nameInput.value = "";
+                if (error) error.textContent = "";
+                updateProfileDisplay();
+                showScreen("newWarriorScreen");
+                return;
+            }
+        }
+
+        document.body.className = "";
+        applyAccentColor(accentColor);
+        updateSettingsDisplay();
+        updateStatsDisplay();
+        updateProfileDisplay();
+        updateSharePreview();
+        showScreen("homeScreen");
+        updateNavigation("home");
+    }
+
+    function completeNewWarriorProfile() {
+        const input = document.getElementById("newWarriorNameInput");
+        const error = document.getElementById("newWarriorError");
+        const cleaned = input ? input.value.replace(/\s+/g, " ").trim().slice(0, 24) : "";
+
+        if (!cleaned) {
+            if (error) error.textContent = "Enter your warrior name to continue.";
+            if (input) input.focus();
+            return;
+        }
+        if (!profileAvatarData) {
+            if (error) error.textContent = "Choose a profile image to continue.";
+            return;
+        }
+
+        profileName = cleaned;
+        try {
+            localStorage.setItem("kw_profile_name", profileName);
+            localStorage.setItem("kw_profile_avatar", profileAvatarData);
+        } catch(storageError) {
+            if (error) error.textContent = "Could not save your profile on this device.";
+            return;
+        }
+
+        document.body.className = "";
+        updateProfileDisplay();
+        updateStatsDisplay();
+        updateSharePreview();
+        showScreen("homeScreen");
+        updateNavigation("home");
+    }
+
     function navigate(page) {
 
         stopTimer();
+        clearArcadeRuntime();
 
         document.body.className = "";
 
@@ -4174,7 +4487,10 @@
         { value: "suddendeath", id: "suddenDeathOption", name: "Sudden Death" },
         { value: "combo", id: "comboOption", name: "Combo" },
         { value: "madlibs", id: "madlibsOption", name: "Mad Libs" },
-        { value: "reverse", id: "reverseOption", name: "Reverse Typer" }
+        { value: "reverse", id: "reverseOption", name: "Reverse Typer" },
+        { value: "ghostrace", id: "ghostRaceOption", name: "Ghost Race" },
+        { value: "defense", id: "keyboardDefenseOption", name: "Keyboard Defense" },
+        { value: "survival", id: "typingSurvivalOption", name: "Typing Survival" }
     ];
     let specialModeIndex = 0;
 
@@ -4209,7 +4525,8 @@
 
         [
             "easyOption","mediumOption","noMercyOption","freestyleOption",
-            "suddenDeathOption","comboOption","madlibsOption","reverseOption"
+            "suddenDeathOption","comboOption","madlibsOption","reverseOption",
+            "ghostRaceOption","keyboardDefenseOption","typingSurvivalOption"
         ].forEach(function(id) {
             const el = document.getElementById(id);
             if (el) {
@@ -4226,7 +4543,10 @@
             suddendeath: "suddenDeathOption",
             combo: "comboOption",
             madlibs: "madlibsOption",
-            reverse: "reverseOption"
+            reverse: "reverseOption",
+            ghostrace: "ghostRaceOption",
+            defense: "keyboardDefenseOption",
+            survival: "typingSurvivalOption"
         };
         const selected = document.getElementById(idsByValue[value]);
         if (selected) {
@@ -4243,6 +4563,7 @@
     function openChaosScreen() {
         stopTimer();
         stopFreestyleTimer();
+        clearArcadeRuntime();
         document.body.className = "";
         hideAllScreens();
         const screen = document.getElementById("chaosScreen");
@@ -4255,6 +4576,7 @@
         // navigate() function only handles home/stats/settings.
         stopTimer();
         stopFreestyleTimer();
+        clearArcadeRuntime();
 
         document.body.className = "";
 
@@ -5435,6 +5757,446 @@
         showScreen("chaosScreen");
     }
 
+    /* =========================================================
+       GHOST RACE / KEYBOARD DEFENSE / TYPING SURVIVAL
+    ========================================================= */
+
+    let arcadeActive = false;
+    let arcadeLastMode = "defense";
+    let arcadeFrame = null;
+    let arcadeStartTime = 0;
+    let arcadeLastFrame = 0;
+    let arcadeLastSpawn = 0;
+    let arcadeScoreValue = 0;
+    let arcadeLivesValue = 3;
+    let arcadeMisses = 0;
+    let arcadeEnemies = [];
+    let survivalDeadline = 0;
+    let survivalWindow = 4000;
+    let sessionGhostLibrary = [];
+    let activeGhostReplay = null;
+    let ghostStartTime = 0;
+    let ghostCharTimes = [];
+    let ghostLastCorrect = 0;
+    let ghostTimer = null;
+    let lastGhostPhrase = "";
+
+    function getArcadeWords() {
+        const arcadeWordPools = {
+            english: [
+                "action","attack","battle","brave","challenge","charge","clever","combo","defend","energy",
+                "focus","ghost","guard","hero","keyboard","level","lightning","master","power","quick",
+                "rally","react","rhythm","shield","skill","speed","strike","survive","target","thunder",
+                "timing","victory","warrior","watch","words","accurate","advance","protect","reflex","streak"
+            ],
+            filipino: [
+                "aksyon","apoy","bagyo","bantay","bayani","bilis","buhay","depensa","galing","hamon",
+                "husay","isip","kaibigan","kalaban","kidlat","laban","lakas","ligtas","linaw","mabilis",
+                "mundo","panalo","pindot","salita","sagot","saya","sigla","sipag","susi","talino",
+                "tanong","tapang","tibay","tiyaga","tumpak","wasto","galaw","handa","iwas","tulong"
+            ]
+        };
+        return arcadeWordPools[language] || arcadeWordPools.english;
+    }
+
+    function updateArcadeHud() {
+        const level = 1 + Math.floor(arcadeScoreValue / 10);
+        document.getElementById("arcadeScore").textContent = arcadeScoreValue;
+        document.getElementById("arcadeLives").textContent = arcadeLivesValue > 0 ? "♥".repeat(arcadeLivesValue) : "0";
+        document.getElementById("arcadeLevel").textContent = level;
+    }
+
+    function clearArcadeRuntime() {
+        arcadeActive = false;
+        if (arcadeFrame !== null) cancelAnimationFrame(arcadeFrame);
+        arcadeFrame = null;
+        if (ghostTimer !== null) clearInterval(ghostTimer);
+        ghostTimer = null;
+        arcadeEnemies.forEach(function(enemy) { if (enemy.el) enemy.el.remove(); });
+        arcadeEnemies = [];
+    }
+
+    function getGhostLibrary() {
+        if (currentAppProfile === "guest") return sessionGhostLibrary.slice();
+        try {
+            const parsed = JSON.parse(localStorage.getItem("kw_ghost_library"));
+            if (Array.isArray(parsed)) return parsed;
+            const legacy = JSON.parse(localStorage.getItem("kw_ghost_replay"));
+            return legacy && legacy.phrase ? [legacy] : [];
+        } catch(error) {
+            return [];
+        }
+    }
+
+    function recordPhraseForGhostLibrary(phrase, durationMs, recordedTimes) {
+        if (!phrase || !durationMs || durationMs < 100) return false;
+        const times = Array.isArray(recordedTimes) && recordedTimes.length === phrase.length
+            ? recordedTimes.slice()
+            : Array.from({ length: phrase.length }, function(_, index) {
+                return Math.round(durationMs * (index + 1) / phrase.length);
+            });
+        const entry = {
+            phrase: phrase,
+            times: times,
+            duration: Math.round(durationMs),
+            language: language,
+            attitude: attitude,
+            recordedFrom: difficulty
+        };
+        let library = getGhostLibrary();
+        const existing = library.find(function(item) {
+            return item && item.phrase === phrase && item.language === language && item.attitude === attitude;
+        });
+        if (existing && Number(existing.duration) <= durationMs) return false;
+        library = library.filter(function(item) {
+            return item && !(item.phrase === phrase && item.language === language && item.attitude === attitude);
+        });
+        library.push(entry);
+        library = library.slice(-24);
+        if (currentAppProfile === "guest") sessionGhostLibrary = library;
+        else {
+            try { localStorage.setItem("kw_ghost_library", JSON.stringify(library)); } catch(error) {}
+        }
+        return true;
+    }
+
+    function startGhostRace() {
+        clearArcadeRuntime();
+        arcadeLastMode = "ghostrace";
+        arcadeActive = false;
+        const eligibleGhosts = getGhostLibrary().filter(function(item) {
+            return item && item.phrase && Array.isArray(item.times) &&
+                (!item.language || item.language === language) &&
+                (!item.attitude || item.attitude === attitude);
+        });
+        const available = phrases[language][attitude] || phrases.english.friendly;
+        const choices = eligibleGhosts.slice().sort(function(a, b) {
+            return Number(a.duration || Infinity) - Number(b.duration || Infinity);
+        });
+        const shuffledAvailable = available.slice().sort(function() { return Math.random() - .5; });
+        shuffledAvailable.forEach(function(phrase) {
+            if (choices.length >= 10) return;
+            if (!choices.some(function(item) { return item.phrase === phrase; })) {
+                choices.push({ phrase: phrase, times: [], duration: 0, language: language, attitude: attitude });
+            }
+        });
+
+        const selection = document.getElementById("ghostPhraseSelection");
+        selection.innerHTML = "";
+        choices.slice(0, 10).forEach(function(choice) {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.className = "ghost-phrase-choice";
+            const copy = document.createElement("span");
+            const title = document.createElement("strong");
+            title.textContent = choice.phrase;
+            const note = document.createElement("small");
+            note.textContent = choice.duration ? "RECORDED PHRASE" : "NEW PHRASE";
+            copy.append(title, note);
+            const time = document.createElement("span");
+            time.className = "ghost-time-badge";
+            time.textContent = choice.duration ? (choice.duration / 1000).toFixed(1) + "s" : "NO TIME";
+            button.append(copy, time);
+            button.addEventListener("click", function() { beginGhostRace(choice); });
+            selection.appendChild(button);
+        });
+
+        if (choices.length) {
+            const randomButton = document.createElement("button");
+            randomButton.type = "button";
+            randomButton.className = "ghost-phrase-choice ghost-random-choice";
+            const randomCopy = document.createElement("span");
+            const randomTitle = document.createElement("strong");
+            randomTitle.textContent = "Choose Random Phrase";
+            const randomNote = document.createElement("small");
+            randomNote.textContent = "SURPRISE ME";
+            randomCopy.append(randomTitle, randomNote);
+            const randomBadge = document.createElement("span");
+            randomBadge.className = "ghost-time-badge";
+            randomBadge.textContent = "RANDOM";
+            randomButton.append(randomCopy, randomBadge);
+            randomButton.addEventListener("click", function() {
+                beginGhostRace(choices[Math.floor(Math.random() * choices.length)]);
+            });
+            selection.insertBefore(randomButton, selection.firstChild);
+        }
+
+        document.getElementById("ghostRaceCourse").hidden = true;
+        selection.hidden = false;
+        document.getElementById("ghostRaceHint").textContent = "Choose a phrase. Recorded cards show the time you need to beat.";
+        document.body.className = "game-active";
+        showScreen("ghostRaceScreen");
+    }
+
+    function beginGhostRace(choice) {
+        arcadeActive = true;
+        ghostStartTime = 0;
+        ghostCharTimes = [];
+        ghostLastCorrect = 0;
+        activeGhostReplay = choice.duration && choice.times.length ? choice : null;
+        currentPhrase = choice.phrase;
+        lastGhostPhrase = currentPhrase;
+        document.getElementById("ghostPhraseSelection").hidden = true;
+        document.getElementById("ghostRaceCourse").hidden = false;
+        document.getElementById("ghostRacePhrase").textContent = currentPhrase;
+        document.getElementById("ghostRaceHint").textContent = activeGhostReplay
+            ? "Time to beat: " + (activeGhostReplay.duration / 1000).toFixed(1) + " seconds."
+            : "No recorded time yet—finish to set the first record.";
+        document.getElementById("ghostPlayerProgress").style.width = "0%";
+        document.getElementById("ghostReplayProgress").style.width = "0%";
+        document.getElementById("ghostPlayerPercent").textContent = "0%";
+        document.getElementById("ghostReplayPercent").textContent = "0%";
+        const input = document.getElementById("ghostRaceInput");
+        input.value = "";
+        input.disabled = false;
+        setTimeout(function() { input.focus(); }, 100);
+
+        ghostTimer = setInterval(function() {
+            if (!arcadeActive || !ghostStartTime || !activeGhostReplay) return;
+            const elapsed = Date.now() - ghostStartTime;
+            let chars = 0;
+            while (chars < activeGhostReplay.times.length && activeGhostReplay.times[chars] <= elapsed) chars++;
+            const percent = Math.min(100, Math.round(chars / currentPhrase.length * 100));
+            document.getElementById("ghostReplayProgress").style.width = percent + "%";
+            document.getElementById("ghostReplayPercent").textContent = percent + "%";
+        }, 50);
+    }
+
+    function updateGhostRace() {
+        if (!arcadeActive) return;
+        const input = document.getElementById("ghostRaceInput");
+        if (!ghostStartTime && input.value.length) ghostStartTime = Date.now();
+        let correct = 0;
+        while (correct < input.value.length && correct < currentPhrase.length && input.value[correct] === currentPhrase[correct]) correct++;
+        if (ghostStartTime && correct > ghostLastCorrect) {
+            const stamp = Date.now() - ghostStartTime;
+            while (ghostCharTimes.length < correct) ghostCharTimes.push(stamp);
+            ghostLastCorrect = correct;
+        }
+        const percent = Math.round(correct / currentPhrase.length * 100);
+        document.getElementById("ghostPlayerProgress").style.width = percent + "%";
+        document.getElementById("ghostPlayerPercent").textContent = percent + "%";
+        if (input.value === currentPhrase) finishGhostRace();
+    }
+
+    function finishGhostRace() {
+        const duration = Math.max(1, Date.now() - ghostStartTime);
+        const beatGhost = activeGhostReplay && duration < activeGhostReplay.duration;
+        const newRecord = recordPhraseForGhostLibrary(currentPhrase, duration, ghostCharTimes);
+        clearArcadeRuntime();
+        recordArcadeStats("ghostrace", 100, 0, currentPhrase.length, duration / 1000, 0);
+        showArcadeResult("Ghost Race", (duration / 1000).toFixed(1) + "s",
+            !activeGhostReplay ? "First time recorded for this phrase." : beatGhost && newRecord ? "New best time! Your faster ghost is now saved." : "Time to beat remains " + (activeGhostReplay.duration / 1000).toFixed(1) + " seconds.");
+    }
+
+    function spawnDefenseEnemy(now) {
+        const arena = document.getElementById("arcadeArena");
+        const pool = getArcadeWords();
+        const word = pool[Math.floor(Math.random() * pool.length)];
+        const el = document.createElement("div");
+        el.className = "word-enemy";
+        el.textContent = word;
+        const x = 13 + Math.random() * 74;
+        el.style.left = x + "%";
+        el.style.top = "-42px";
+        arena.appendChild(el);
+        arcadeEnemies.push({ word: word, y: -42, speed: 25 + Math.min(65, arcadeScoreValue * 1.4), el: el });
+        arcadeLastSpawn = now;
+    }
+
+    function startKeyboardDefense() {
+        startArcadeBase("defense", "Keyboard Defense", "Destroy every word before it reaches your keyboard base.");
+        arcadeLivesValue = 5;
+        updateArcadeHud();
+        arcadeLastSpawn = performance.now() - 1500;
+        arcadeLastFrame = performance.now();
+        arcadeFrame = requestAnimationFrame(defenseFrame);
+    }
+
+    function defenseFrame(now) {
+        if (!arcadeActive) return;
+        const delta = Math.min(50, now - arcadeLastFrame) / 1000;
+        arcadeLastFrame = now;
+        const spawnDelay = Math.max(650, 1900 - arcadeScoreValue * 22);
+        if (now - arcadeLastSpawn >= spawnDelay) spawnDefenseEnemy(now);
+        arcadeEnemies.slice().forEach(function(enemy) {
+            enemy.y += enemy.speed * delta;
+            enemy.el.style.top = enemy.y + "px";
+            if (enemy.y >= 340) {
+                enemy.el.remove();
+                arcadeEnemies.splice(arcadeEnemies.indexOf(enemy), 1);
+                arcadeLivesValue--;
+                arcadeMisses++;
+                updateArcadeHud();
+                if (arcadeLivesValue <= 0) finishArcadeRun();
+            }
+        });
+        if (arcadeActive) arcadeFrame = requestAnimationFrame(defenseFrame);
+    }
+
+    function startTypingSurvival() {
+        startArcadeBase("survival", "Typing Survival", "Clear each word before its shrinking timer expires.");
+        document.getElementById("arcadeBase").textContent = "STAY ALIVE";
+        nextSurvivalWord();
+        arcadeFrame = requestAnimationFrame(survivalFrame);
+    }
+
+    function nextSurvivalWord() {
+        const arena = document.getElementById("arcadeArena");
+        arena.querySelectorAll(".survival-word,.survival-level,.arcade-time-track").forEach(function(el) { el.remove(); });
+        const pool = getArcadeWords();
+        const word = pool[Math.floor(Math.random() * pool.length)];
+        const wordEl = document.createElement("div");
+        wordEl.className = "survival-word";
+        wordEl.textContent = word;
+        wordEl.dataset.word = word;
+        const levelEl = document.createElement("div");
+        levelEl.className = "survival-level";
+        levelEl.textContent = "TYPE BEFORE TIME RUNS OUT";
+        const track = document.createElement("div");
+        track.className = "arcade-time-track";
+        const bar = document.createElement("div");
+        bar.className = "arcade-time-bar";
+        track.appendChild(bar);
+        arena.append(wordEl, levelEl, track);
+        survivalWindow = Math.max(1050, 4000 - arcadeScoreValue * 85);
+        survivalDeadline = performance.now() + survivalWindow;
+        document.getElementById("arcadeInput").value = "";
+    }
+
+    function survivalFrame(now) {
+        if (!arcadeActive) return;
+        const remaining = Math.max(0, survivalDeadline - now);
+        const bar = document.querySelector(".arcade-time-bar");
+        if (bar) bar.style.transform = "scaleX(" + (remaining / survivalWindow) + ")";
+        if (remaining <= 0) {
+            arcadeLivesValue--;
+            arcadeMisses++;
+            updateArcadeHud();
+            if (arcadeLivesValue <= 0) finishArcadeRun();
+            else nextSurvivalWord();
+        }
+        if (arcadeActive) arcadeFrame = requestAnimationFrame(survivalFrame);
+    }
+
+    function startArcadeBase(mode, title, subtitle) {
+        clearArcadeRuntime();
+        arcadeLastMode = mode;
+        arcadeActive = true;
+        arcadeStartTime = Date.now();
+        arcadeScoreValue = 0;
+        arcadeLivesValue = 3;
+        arcadeMisses = 0;
+        const arena = document.getElementById("arcadeArena");
+        arena.querySelectorAll(":scope > :not(.arcade-grid):not(.arcade-base)").forEach(function(el) { el.remove(); });
+        document.getElementById("arcadeBase").textContent = "KEYBOARD BASE";
+        document.getElementById("arcadeModeTitle").textContent = title;
+        document.getElementById("arcadeModeSubtitle").textContent = subtitle;
+        const input = document.getElementById("arcadeInput");
+        input.value = "";
+        input.disabled = false;
+        updateArcadeHud();
+        document.body.className = "game-active";
+        showScreen("arcadeModeScreen");
+        setTimeout(function() { input.focus(); }, 100);
+    }
+
+    function handleArcadeInput() {
+        if (!arcadeActive) return;
+        const input = document.getElementById("arcadeInput");
+        const typed = input.value.trim().toLowerCase();
+        if (arcadeLastMode === "defense") {
+            const matches = arcadeEnemies.filter(function(enemy) { return enemy.word === typed; }).sort(function(a,b) { return b.y - a.y; });
+            if (matches.length) {
+                const enemy = matches[0];
+                enemy.el.remove();
+                arcadeEnemies.splice(arcadeEnemies.indexOf(enemy), 1);
+                arcadeScoreValue++;
+                input.value = "";
+                updateArcadeHud();
+            }
+        } else if (arcadeLastMode === "survival") {
+            const wordEl = document.querySelector(".survival-word");
+            if (wordEl && typed === wordEl.dataset.word) {
+                arcadeScoreValue++;
+                updateArcadeHud();
+                nextSurvivalWord();
+            }
+        }
+    }
+
+    function recordArcadeStats(mode, accuracy, misses, correctUnits, elapsed, score) {
+        roundsPlayed++;
+        totalAccuracy += accuracy;
+        totalMistakes += misses;
+        bestAccuracy = Math.max(bestAccuracy, accuracy);
+        const wpm = elapsed > 0 ? Math.round((correctUnits / 5) / (elapsed / 60)) : 0;
+        bestWpm = Math.max(bestWpm, wpm);
+        const langStats = languageStats[language] || createDefaultLanguageStats();
+        langStats.rounds++;
+        langStats.totalAccuracy += accuracy;
+        langStats.totalMistakes += misses;
+        langStats.bestAccuracy = Math.max(langStats.bestAccuracy, accuracy);
+        langStats.bestWpm = Math.max(langStats.bestWpm, wpm);
+        langStats.totalTime += elapsed;
+        languageStats[language] = langStats;
+        const key = getModeStatsKey(language, attitude, mode);
+        const stats = modeStats[key] || createDefaultModeStats();
+        stats.rounds++;
+        stats.bestAccuracy = Math.max(stats.bestAccuracy, accuracy);
+        stats.bestWpm = Math.max(stats.bestWpm, wpm);
+        stats.totalMistakes += misses;
+        stats.totalTime += elapsed;
+        stats.bestScore = Math.max(stats.bestScore || 0, score || 0);
+        if (mode === "ghostrace") {
+            stats.bestTime = !stats.bestTime ? elapsed : Math.min(stats.bestTime, elapsed);
+        } else {
+            stats.bestTime = Math.max(stats.bestTime || 0, elapsed);
+        }
+        modeStats[key] = stats;
+        saveStats();
+    }
+
+    function finishArcadeRun() {
+        if (!arcadeActive) return;
+        const elapsed = Math.max(.1, (Date.now() - arcadeStartTime) / 1000);
+        const accuracy = Math.round(arcadeScoreValue / Math.max(1, arcadeScoreValue + arcadeMisses) * 100);
+        const mode = arcadeLastMode;
+        clearArcadeRuntime();
+        recordArcadeStats(mode, accuracy, arcadeMisses, arcadeScoreValue * 5, elapsed, arcadeScoreValue);
+        showArcadeResult(mode === "defense" ? "Keyboard Defense" : "Typing Survival", arcadeScoreValue,
+            arcadeScoreValue + " words cleared • " + accuracy + "% defense rate • " + elapsed.toFixed(1) + "s survived");
+    }
+
+    function showArcadeResult(title, score, details) {
+        document.getElementById("arcadeResultTitle").textContent = title;
+        document.getElementById("arcadeResultScore").textContent = score;
+        document.getElementById("arcadeResultDetails").textContent = details;
+        document.body.className = "result-active";
+        showScreen("arcadeResultScreen");
+    }
+
+    function endArcadeMode() {
+        if (arcadeLastMode === "ghostrace") {
+            if (arcadeActive) {
+                clearArcadeRuntime();
+                startGhostRace();
+            } else {
+                showModeScreen();
+            }
+        } else if (arcadeActive) finishArcadeRun();
+        else showModeScreen();
+    }
+
+    function restartArcadeMode() {
+        if (arcadeLastMode === "ghostrace") startGhostRace();
+        else if (arcadeLastMode === "defense") startKeyboardDefense();
+        else startTypingSurvival();
+    }
+
+    document.getElementById("ghostRaceInput").addEventListener("input", updateGhostRace);
+    document.getElementById("arcadeInput").addEventListener("input", handleArcadeInput);
+
 
     /* =========================================================
        TIMER
@@ -5634,6 +6396,9 @@
         const accuracy = accuracyBase > 0
             ? Math.max(0, Math.round((accuracyBase - characterErrors) / accuracyBase * 100))
             : 0;
+        if (currentPhrase && elapsed > 0 && difficulty !== "madlibs") {
+            recordPhraseForGhostLibrary(currentPhrase, elapsed * 1000);
+        }
         wrongWordCount = editDistance(typedWords, currentPhraseWords);
         mistakeCount = characterErrors;
         incorrectKeystrokes = characterErrors;
@@ -6674,15 +7439,18 @@
         language = value;
 
         try {
+            if (currentAppProfile === "guest") {
+                updateSettingsDisplay();
+                return;
+            }
             localStorage.setItem(
                 "kw_language",
                 language
             );
 
-            localStorage.setItem(
-                "kw_profile_name",
-                profileName
-            );
+            if (currentAppProfile !== "guest") {
+                localStorage.setItem("kw_profile_name", profileName);
+            }
         } catch(error) {}
 
         updateSettingsDisplay();
@@ -6699,9 +7467,9 @@
         theme = "dark";
         document.body.classList.remove("light-mode");
 
-        try {
-            localStorage.setItem("kw_theme", "dark");
-        } catch(error) {}
+        if (currentAppProfile !== "guest") {
+            try { localStorage.setItem("kw_theme", "dark"); } catch(error) {}
+        }
     }
 
     function setTheme() {
@@ -6732,7 +7500,9 @@
         if (!/^#[0-9A-Fa-f]{6}$/.test(value)) return;
         accentColor = value;
         applyAccentColor(accentColor);
-        try { localStorage.setItem("kw_accent", accentColor); } catch(error) {}
+        if (currentAppProfile !== "guest") {
+            try { localStorage.setItem("kw_accent", accentColor); } catch(error) {}
+        }
         updateSettingsDisplay();
     }
 
@@ -6781,6 +7551,9 @@
 
             if (difficulty === "madlibs") difficultyText.textContent = "Mad Libs";
             if (difficulty === "reverse") difficultyText.textContent = "Reverse Typer";
+            if (difficulty === "ghostrace") difficultyText.textContent = "Ghost Race";
+            if (difficulty === "defense") difficultyText.textContent = "Keyboard Defense";
+            if (difficulty === "survival") difficultyText.textContent = "Typing Survival";
 
         }
 
@@ -6797,10 +7570,16 @@
         const accentPicker = document.getElementById("accentColorPicker");
         const accentValue = document.getElementById("accentColorValue");
         const appVersion = document.getElementById("appVersion");
+        const activeProfileDescription = document.getElementById("activeProfileDescription");
 
         if (accentPicker) accentPicker.value = accentColor;
         if (accentValue) accentValue.textContent = accentColor.toUpperCase();
         if (appVersion) appVersion.textContent = "v" + APP_VERSION;
+        if (activeProfileDescription) {
+            activeProfileDescription.textContent = currentAppProfile === "guest"
+                ? "Guest profile • stats reset when the app is reopened."
+                : "Warrior profile • progress is saved on this device.";
+        }
 
     }
 
@@ -6818,9 +7597,9 @@
 
         profileName = cleaned || "YOUR NAME";
 
-        try {
-            localStorage.setItem("kw_profile_name", profileName);
-        } catch(error) {}
+        if (currentAppProfile !== "guest") {
+            try { localStorage.setItem("kw_profile_name", profileName); } catch(error) {}
+        }
 
         updateProfileDisplay();
         updateSharePreview();
@@ -6863,7 +7642,9 @@
         context.font = "145px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif";
         context.fillText(symbol, 128, 137);
         profileAvatarData = canvas.toDataURL("image/png");
-        try { localStorage.setItem("kw_profile_avatar", profileAvatarData); } catch(error) {}
+        if (currentAppProfile !== "guest") {
+            try { localStorage.setItem("kw_profile_avatar", profileAvatarData); } catch(error) {}
+        }
         closeAvatarPicker();
         updateProfileDisplay();
         updateSharePreview();
@@ -6888,7 +7669,9 @@
                 context.drawImage(image, sourceX, sourceY, sourceSize, sourceSize, 0, 0, size, size);
 
                 profileAvatarData = canvas.toDataURL("image/webp", .86);
-                try { localStorage.setItem("kw_profile_avatar", profileAvatarData); } catch(error) {}
+                if (currentAppProfile !== "guest") {
+                    try { localStorage.setItem("kw_profile_avatar", profileAvatarData); } catch(error) {}
+                }
                 updateProfileDisplay();
                 updateSharePreview();
 
@@ -6902,7 +7685,9 @@
 
     function resetProfileAvatar() {
         profileAvatarData = "";
-        try { localStorage.removeItem("kw_profile_avatar"); } catch(error) {}
+        if (currentAppProfile !== "guest") {
+            try { localStorage.removeItem("kw_profile_avatar"); } catch(error) {}
+        }
         updateProfileDisplay();
         updateSharePreview();
     }
@@ -6915,6 +7700,9 @@
         const avatarButton = document.getElementById("profileAvatarButton");
         const avatarImage = document.getElementById("profileAvatarImage");
         const avatarReset = document.getElementById("avatarResetButton");
+        const profileKicker = document.getElementById("profileKicker");
+        const onboardingAvatar = document.getElementById("newWarriorAvatarPreview");
+        const onboardingAvatarImage = document.getElementById("newWarriorAvatarImage");
 
         if (nameEl) {
             nameEl.textContent = profileName || "YOUR NAME";
@@ -6937,6 +7725,15 @@
         }
 
         if (avatarReset) avatarReset.classList.toggle("show", Boolean(profileAvatarData));
+        if (profileKicker) {
+            profileKicker.textContent = currentAppProfile === "guest"
+                ? "GUEST SESSION • TEMPORARY STATS"
+                : "KEYBOARD WARRIOR PROFILE";
+        }
+        if (onboardingAvatar && onboardingAvatarImage) {
+            onboardingAvatar.classList.toggle("has-image", Boolean(profileAvatarData));
+            onboardingAvatarImage.src = profileAvatarData || "";
+        }
 
     }
 
@@ -6946,6 +7743,8 @@
     ========================================================= */
 
     function saveStats() {
+
+        if (currentAppProfile === "guest") return;
 
         try {
 
@@ -7190,6 +7989,12 @@
             difficultyName = "Mad Libs";
         } else if (level === "reverse") {
             difficultyName = "Reverse Typer";
+        } else if (level === "ghostrace") {
+            difficultyName = "Ghost Race";
+        } else if (level === "defense") {
+            difficultyName = "Keyboard Defense";
+        } else if (level === "survival") {
+            difficultyName = "Typing Survival";
         } else {
             difficultyName = level;
         }
@@ -7302,18 +8107,58 @@
             ? (data.bestRankedScore || 0)
             : data.bestAccuracy;
         const shortName = formatModeName(mode, level).split(" — ")[1] || level;
+        let bestValue = bestModeScore + "%";
+        let bestLabel = level === "nomercy" ? "RANKED SCORE" : "BEST SCORE";
+        let resultValue = data.bestWpm;
+        let resultLabel = "WPM · " + data.totalMistakes + " ERR";
+
+        if (level === "ghostrace") {
+            let bestTime = data.bestTime || 0;
+            if (!bestTime) {
+                const matchingTimes = getGhostLibrary().filter(function(item) {
+                    return item && item.language === lang && item.attitude === mode && item.duration;
+                }).map(function(item) { return item.duration / 1000; });
+                if (matchingTimes.length) bestTime = Math.min.apply(Math, matchingTimes);
+            }
+            bestValue = bestTime ? bestTime.toFixed(1) + "s" : "—";
+            bestLabel = "TIME TO BEAT";
+            resultValue = data.bestWpm;
+            resultLabel = "BEST RACE WPM";
+        } else if (level === "defense") {
+            bestValue = data.bestScore || 0;
+            bestLabel = "WORDS DEFENDED";
+            resultValue = data.bestAccuracy + "%";
+            resultLabel = "DEFENSE RATE";
+        } else if (level === "survival") {
+            bestValue = data.bestScore || 0;
+            bestLabel = "WORDS CLEARED";
+            resultValue = data.bestTime ? data.bestTime.toFixed(1) + "s" : "—";
+            resultLabel = "LONGEST RUN";
+        } else if (level === "combo") {
+            bestValue = (data.bestCombo || 0) + "x";
+            bestLabel = "BEST COMBO";
+            resultValue = data.bestWpm;
+            resultLabel = "BEST WPM";
+        } else if (level === "suddendeath") {
+            bestLabel = "BEST PROGRESS";
+            resultValue = data.totalMistakes;
+            resultLabel = "FATAL ERRORS";
+        } else if (level === "madlibs") {
+            bestLabel = "CHAOS SCORE";
+            resultLabel = "BEST WPM";
+        }
         return `
             <div class="mode-table-row">
                 <div class="mode-row-name"><strong>${shortName}</strong><small>${data.rounds ? "PLAYED" : "NO ROUNDS YET"}</small></div>
                 <div class="mode-row-metric"><strong>${data.rounds}</strong><small>${averageTime} AVG</small></div>
-                <div class="mode-row-metric"><strong>${bestModeScore}%</strong><small>SCORE</small></div>
-                <div class="mode-row-metric"><strong>${data.bestWpm}</strong><small>WPM · ${data.totalMistakes} ERR</small></div>
+                <div class="mode-row-metric"><strong>${bestValue}</strong><small>${bestLabel}</small></div>
+                <div class="mode-row-metric"><strong>${resultValue}</strong><small>${resultLabel}</small></div>
             </div>`;
     }
 
     function createAttitudeModeGroup(lang, mode) {
         const title = mode === "friendly" ? "Friendly" : "Almighty";
-        const levels = ["easy", "medium", "nomercy", "suddendeath", "combo", "curse", "madlibs", "reverse"];
+        const levels = ["easy", "medium", "nomercy", "suddendeath", "combo", "curse", "madlibs", "reverse", "ghostrace", "defense", "survival"];
         const playedLevels = levels.filter(function(level) {
             const data = modeStats[getModeStatsKey(lang, mode, level)] || createDefaultModeStats();
             return data.rounds > 0;
@@ -7321,7 +8166,7 @@
         return `
             <div class="mode-group-title">${title}</div>
             ${playedLevels.length
-                ? `<div class="mode-column-head"><span>MODE</span><span>ROUNDS</span><span>BEST</span><span>SPEED</span></div>` +
+                ? `<div class="mode-column-head"><span>MODE</span><span>ROUNDS</span><span>BEST</span><span>RESULT</span></div>` +
                     playedLevels.map(function(level) { return createModeStatsRow(lang, mode, level); }).join("")
                 : `<div class="mode-empty">No ${title.toLowerCase()} rounds recorded.</div>`}`;
     }
@@ -7463,6 +8308,10 @@
     }
 
     function exportBackupData() {
+        if (currentAppProfile === "guest") {
+            setBackupStatus("Switch to your Warrior profile to create a permanent backup.", true);
+            return;
+        }
         try {
             saveStats();
             localStorage.setItem("kw_profile_name", profileName);
@@ -7751,7 +8600,9 @@
         profileCardStyle = style;
         generatedCanvas = null;
         generatedImageData = "";
-        try { localStorage.setItem("kw_profile_card_style", profileCardStyle); } catch(error) {}
+        if (currentAppProfile !== "guest") {
+            try { localStorage.setItem("kw_profile_card_style", profileCardStyle); } catch(error) {}
+        }
         updateSharePreview();
 
         const previewCard = document.getElementById("imagePreviewCard");
@@ -8420,6 +9271,8 @@
     updateSettingsDisplay();
     updateStatsDisplay();
     updateProfileDisplay();
+    updateSharePreview();
+    showProfileSelection();
 
 
 
@@ -8430,6 +9283,18 @@
        the mode-selection screen.
     ========================================================= */
     function startSelectedMode() {
+        if (difficulty === "ghostrace") {
+            startGhostRace();
+            return;
+        }
+        if (difficulty === "defense") {
+            startKeyboardDefense();
+            return;
+        }
+        if (difficulty === "survival") {
+            startTypingSurvival();
+            return;
+        }
         if (difficulty === "freestyle" || selectedMode === "freestyle") {
             try {
                 startFreestyle();
@@ -8574,7 +9439,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=4", { updateViaCache: "none" })
+                .register("./sw.js?v=13", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
