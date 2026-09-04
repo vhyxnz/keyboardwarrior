@@ -1,4 +1,35 @@
 #navProfileLabel { display:block; max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.mirror-phrase { position:relative; overflow:auto; }
+.mirror-target-done { color:#6ee7b7; }
+.mirror-target-next { background:var(--accent); color:#fff; border-radius:2px; text-decoration:underline; }
+.mirror-key.pressed { background:var(--accent); color:#fff; transform:translateY(1px); }
+@media (max-width:700px), (pointer:coarse) {
+    #mirrorMatchScreen.active { position:fixed; inset:0; z-index:100; padding: max(4px,env(safe-area-inset-top)) max(3px,env(safe-area-inset-right)) max(4px,env(safe-area-inset-bottom)) max(3px,env(safe-area-inset-left)); height:100dvh; min-height:0; overflow:auto; background:var(--bg); animation:none; }
+    .mirror-arena { min-height:100%; height:100%; grid-template-rows:minmax(270px,1fr) 24px minmax(270px,1fr); gap:3px; }
+    .mirror-player { padding:5px; border-radius:12px; }
+    .mirror-player-head { margin-bottom:3px; }
+    .mirror-player-name { font-size:11px; }
+    .mirror-phrase { font-size:14px; line-height:1.35; min-height:38px; max-height:58px; margin-bottom:4px; flex:1; }
+    .mirror-input { flex:0 0 32px; min-height:32px; height:32px; padding:4px 7px; font-size:16px; }
+    .mirror-keyboard { margin-top:auto; padding-top:5px; gap:3px; user-select:none; -webkit-user-select:none; }
+    .mirror-keyboard-row { gap:2px; }
+    .mirror-key { min-height:clamp(32px,5.5dvh,44px); font-size:16px; border-radius:5px; padding:0; -webkit-touch-callout:none; }
+    .mirror-key.function { font-size:12px; }
+    .mirror-key.space { flex:4; }
+    .mirror-quit { top:calc(50% - 12px); right:3px; padding:4px 10px; min-height:24px; }
+}
+@media (max-height:500px) and (orientation:landscape) and (pointer:coarse) {
+    .mirror-arena { grid-template-columns:1fr 1fr; grid-template-rows:1fr; gap:6px; padding-top:28px; }
+    .mirror-face-flip { transform:none; }
+    .mirror-divider { display:none; }
+    .mirror-quit { top:0; }
+    .mirror-key { min-height:38px; }
+}
+.shortcut-row { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:12px 0; font-size:13px; }
+.shortcut-row select { width:145px; flex-shrink:0; }
+#shortcutStatus, .arcade-shortcut-hint { font-size:11px; line-height:1.6; color:var(--muted); }
+.power-shortcut-key { font:800 10px/1.2 monospace; border:1px solid currentColor; padding:3px; border-radius:4px; }
+@media (hover:none) and (pointer:coarse) { .power-shortcut-key, .arcade-shortcut-hint { display:none; } }
 .warrior-banner { height:100px; padding:17px 20px; display:flex; justify-content:space-between; align-items:flex-start; gap:12px; border:1px solid var(--border); border-radius:20px 20px 0 0; background:radial-gradient(ellipse at 80% 100%,#64419080,transparent 65%),linear-gradient(135deg,#171d2f,#0f1421); }
 .warrior-banner span { font-size:10px; letter-spacing:2px; color:#cbd5e1; font-weight:900; }
 .warrior-banner strong { font-size:11px; padding:6px 9px; border-radius:30px; background:#080b1280; color:#fff; white-space:nowrap; }

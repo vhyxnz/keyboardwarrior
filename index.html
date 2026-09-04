@@ -512,6 +512,10 @@
         .arcade-time-track { position: absolute; left: 28px; right: 28px; top: 210px; height: 10px; overflow: hidden; border-radius: 99px; background: rgba(255,255,255,.08); }
         .arcade-time-bar { width: 100%; height: 100%; background: linear-gradient(90deg,var(--red),var(--yellow),var(--green)); transform-origin: left; }
         .arcade-input { width: 100%; min-height: 52px; margin-top: 12px; padding: 0 16px; border: 2px solid var(--accent); border-radius: 14px; background: var(--panel); color: white; font-size: 18px; font-weight: 900; text-align: center; }
+        .arcade-input-row { display:flex; align-items:stretch; gap:8px; margin-top:12px; }
+        .arcade-input-row .arcade-input { flex:1; min-width:0; width:0; margin-top:0; }
+        .arcade-clear { min-width:68px; min-height:52px; padding:8px 12px; border:1px solid var(--border); border-radius:14px; background:var(--panel); color:var(--text); font-size:12px; font-weight:900; cursor:pointer; touch-action:manipulation; }
+        .arcade-clear:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
         .arcade-actions { display: grid; grid-template-columns: 1fr; gap: 8px; margin-top: 10px; }
         .ghost-course { padding: 18px; border: 1px solid var(--border); border-radius: 18px; background: var(--panel); }
         .ghost-course[hidden], .ghost-phrase-selection[hidden] { display: none; }
@@ -3330,9 +3334,9 @@
             <details class="power-info" id="defensePowerInfo" hidden>
                 <summary><span aria-hidden="true">i</span>Power-ups</summary>
                 <p>Gold power-ups are optional. Click or tap one as it falls to activate it without interrupting your typing. Letting it pass the base never costs a life.</p>
-                <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-freeze"/></svg><strong>Freeze / Yelo:</strong> Slows enemies for 5 seconds, then gradually restores their speed over 2 seconds. New enemies pause during this recovery.</p>
-                <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-nova"/></svg><strong>Nova / Putok:</strong> Clears all visible enemies and awards their points.</p>
-                <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-repair"/></svg><strong>Repair / Ayos:</strong> Restores one life, or gives 3 bonus points if your base is already full.</p>
+                <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-freeze"/></svg><strong>Ice:</strong> Slows enemies for 5 seconds, then gradually restores their speed over 2 seconds. New enemies pause during this recovery.</p>
+                <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-nova"/></svg><strong>Boom:</strong> Clears all visible enemies and awards their points.</p>
+                <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-repair"/></svg><strong>Repair:</strong> Restores one life, or gives 3 bonus points if your base is already full.</p>
             </details>
             <div class="arcade-hud">
                 <div class="arcade-hud-item"><strong id="arcadeScore">0</strong><span>SCORE</span></div>
@@ -3340,7 +3344,10 @@
                 <div class="arcade-hud-item"><strong id="arcadeLevel">1</strong><span>LEVEL</span></div>
             </div>
             <div class="arcade-arena" id="arcadeArena"><div class="arcade-grid"></div><div class="arcade-base" id="arcadeBase">KEYBOARD BASE</div></div>
-            <input class="arcade-input" id="arcadeInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type a target word…">
+            <div class="arcade-input-row">
+                <input class="arcade-input" id="arcadeInput" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type a target word…" aria-label="Type a target word">
+                <button type="button" class="arcade-clear" id="arcadeClearText" aria-label="Clear typed text" title="Clear text and keep typing">CLEAR</button>
+            </div>
             <div class="arcade-actions"><button type="button" class="action-btn secondary-btn" onclick="endArcadeMode()">END RUN</button></div>
         </div>
     </section>
@@ -3557,6 +3564,7 @@
                     onclick="shareStats()">
                 GENERATE &amp; EXPORT CARD
             </button>
+            <p id="cardGenerationStatus" role="status" class="muted"></p>
         </div>
 
         <div class="image-preview-card" id="imagePreviewCard">
@@ -3698,9 +3706,9 @@
     <p>You start with <strong>5 lives</strong>. Each enemy reaching the base costs one life. Every 10 points raises your level, making enemies faster and more frequent.</p>
     <h3>Optional gold power-ups</h3>
     <p>Click or tap a gold power-up before it reaches the base. Your typed text stays intact. Ignoring a power-up has <strong>no penalty</strong>.</p>
-    <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-freeze"/></svg><strong>Freeze / Yelo:</strong> Slows enemies for 5 seconds, then restores speed gradually over 2 seconds. New enemies pause throughout.</p>
-    <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-nova"/></svg><strong>Nova / Putok:</strong> Destroys all visible enemies and awards their points.</p>
-    <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-repair"/></svg><strong>Repair / Ayos:</strong> Restores one life. At full health, it awards 3 bonus points instead.</p>
+    <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-freeze"/></svg><strong>Ice:</strong> Slows enemies for 5 seconds, then restores speed gradually over 2 seconds. New enemies pause throughout.</p>
+    <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-nova"/></svg><strong>Boom:</strong> Destroys all visible enemies and awards their points.</p>
+    <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-repair"/></svg><strong>Repair:</strong> Restores one life. At full health, it awards 3 bonus points instead.</p>
     <button type="button" class="action-btn" onclick="beginKeyboardDefense()">START DEFENSE</button>
     <button type="button" class="action-btn secondary-btn" style="margin-top:9px;" onclick="document.getElementById('defenseIntroDialog').close()">CANCEL</button>
 </dialog>
@@ -5637,6 +5645,7 @@
     ========================================================= */
 
     function clearMirrorMatchTimers() {
+        [1,2].forEach(stopMirrorBackspace);
         if (mirrorChaosInterval !== null) {
             clearInterval(mirrorChaosInterval);
             mirrorChaosInterval = null;
@@ -5652,6 +5661,29 @@
     }
 
     const mirrorKeyboardState = { 1: { symbols: false, shift: false }, 2: { symbols: false, shift: false } };
+    const mirrorHeldBackspace = {};
+    window.addEventListener('blur', function() { [1,2].forEach(stopMirrorBackspace); });
+    function stopMirrorBackspace(player) {
+        clearTimeout(mirrorHeldBackspace[player]);
+        delete mirrorHeldBackspace[player];
+    }
+    function mirrorPhonePhrase(phrase) {
+        return phrase.trim().split(/\s+/).slice(0, 10).join(' ');
+    }
+    function renderMirrorTarget(player) {
+        const target = document.getElementById('mirrorPhrase' + player);
+        const input = document.getElementById('mirrorInput' + player);
+        if (!target || !input) return;
+        let correct = 0;
+        while (correct < input.value.length && input.value[correct] === mirrorMatchPhrase[correct]) correct++;
+        target.replaceChildren();
+        const done = document.createElement('span'); done.className='mirror-target-done'; done.textContent=mirrorMatchPhrase.slice(0,correct);
+        const next = document.createElement('span'); next.className='mirror-target-next'; next.textContent=mirrorMatchPhrase[correct] || '';
+        const rest = document.createElement('span'); rest.textContent=mirrorMatchPhrase.slice(correct+1);
+        target.append(done,next,rest);
+        target.scrollTop = Math.max(0,next.offsetTop-target.clientHeight/2);
+        input.scrollTop = input.scrollHeight;
+    }
 
     function buildMirrorKeyboard(player) {
         const keyboard = document.getElementById("mirrorKeyboard" + player);
@@ -5662,12 +5694,12 @@
             Array.from("1234567890"),
             ["@", "#", "$", "%", "&", "*", "(", ")", "/"],
             ["!", "?", "'", '"', ":", ";", "-", "BACK"],
-            ["SYMBOLS", ",", "SPACE", "."]
+            ["SYMBOLS", "'", ",", "SPACE", "."]
         ] : [
             Array.from("qwertyuiop"),
             Array.from("asdfghjkl"),
             ["SHIFT", ...Array.from("zxcvbnm"), "BACK"],
-            ["SYMBOLS", ",", "SPACE", "."]
+            ["SYMBOLS", "'", ",", "SPACE", "."]
         ];
         rows.forEach(function(rowKeys) {
             const row = document.createElement("div");
@@ -5681,8 +5713,23 @@
                 if (key === "SHIFT") button.setAttribute("aria-pressed", String(state.shift));
                 button.addEventListener("pointerdown", function(event) {
                     event.preventDefault();
+                    if (event.button !== 0) return;
+                    mirrorTapKey(player, key);
+                    button.classList.add('pressed');
+                    if (key === 'BACK') {
+                        stopMirrorBackspace(player);
+                        button.setPointerCapture(event.pointerId);
+                        function repeat() {
+                            mirrorTapKey(player, 'BACK');
+                            mirrorHeldBackspace[player] = setTimeout(repeat, 75);
+                        }
+                        mirrorHeldBackspace[player] = setTimeout(repeat, 350);
+                    }
                 });
-                button.addEventListener("click", function() { mirrorTapKey(player, key); });
+                ['pointerup','pointercancel','lostpointercapture','pointerleave'].forEach(function(type) {
+                    button.addEventListener(type, function() { button.classList.remove('pressed'); if (key === 'BACK') stopMirrorBackspace(player); });
+                });
+                button.addEventListener("click", function(event) { if (event.detail === 0) mirrorTapKey(player, key); });
                 row.appendChild(button);
             });
             keyboard.appendChild(row);
@@ -5723,6 +5770,7 @@
         const available = phrases[language][attitude] || phrases.english.friendly;
         const index = getNextPhraseIndex(language, attitude);
         mirrorMatchPhrase = available[index];
+        if (window.matchMedia('(max-width: 700px), (pointer: coarse)').matches) mirrorMatchPhrase = mirrorPhonePhrase(mirrorMatchPhrase);
 
         [1, 2].forEach(function(player) {
             const phrase = document.getElementById("mirrorPhrase" + player);
@@ -5730,6 +5778,7 @@
             const progress = document.getElementById("mirrorProgress" + player);
             const status = document.getElementById("mirrorPlayer" + player + "Status");
             if (phrase) phrase.textContent = mirrorMatchPhrase;
+            mirrorKeyboardState[player] = {symbols:false, shift:false};
             buildMirrorKeyboard(player);
             if (input) {
                 const touchDevice = navigator.maxTouchPoints > 0 || window.matchMedia("(pointer: coarse)").matches;
@@ -5739,6 +5788,7 @@
                 input.disabled = true;
                 input.oninput = function() { updateMirrorPlayer(player); };
             }
+            renderMirrorTarget(player);
             if (progress) progress.style.width = "0%";
             if (status) status.textContent = "GET READY";
         });
@@ -5785,6 +5835,7 @@
         const percent = mirrorMatchPhrase.length ? Math.round(correctPrefix / mirrorMatchPhrase.length * 100) : 0;
         if (progress) progress.style.width = percent + "%";
         if (status) status.textContent = percent + "%";
+        renderMirrorTarget(player);
 
         if (value === mirrorMatchPhrase) finishMirrorPlayer(player);
     }
@@ -6203,15 +6254,9 @@
     }
 
     function spawnDefensePower(now) {
-        const definitions = language === "filipino"
-            ? [
-                { word: "yelo", type: "freeze", label: "PABAGALIN" },
-                { word: "putok", type: "nova", label: "WASAKIN LAHAT" },
-                { word: "ayos", type: "repair", label: "AYUSIN ANG BASE" }
-            ]
-            : [
-                { word: "freeze", type: "freeze", label: "SLOW ENEMIES" },
-                { word: "nova", type: "nova", label: "DESTROY ALL" },
+        const definitions = [
+                { word: "ice", type: "freeze", label: "SLOW ENEMIES" },
+                { word: "boom", type: "nova", label: "DESTROY ALL" },
                 { word: "repair", type: "repair", label: "RESTORE LIFE" }
             ];
         const power = definitions[Math.floor(Math.random() * definitions.length)];
@@ -6241,6 +6286,7 @@
         icon.appendChild(use);
         el.appendChild(icon);
         el.title = power.word.toUpperCase() + " — " + power.label;
+        if (window.KeyboardShortcuts) KeyboardShortcuts.decoratePower(el, power.type);
         el.style.left = (8 + Math.random() * 65) + "%";
         document.getElementById("arcadeArena").appendChild(el);
         arcadePowerPickup = { word: power.word, type: power.type, y: 0, el: el };
@@ -6266,7 +6312,7 @@
         if (power.type === "freeze") {
             defenseFreezeUntil = performance.now() + 5000;
             arena.classList.add("power-frozen");
-            showPowerBanner("FREEZE • 5 SECONDS");
+            showPowerBanner("ICE • 5 SECONDS");
         } else if (power.type === "nova") {
             const previousLevel = 1 + Math.floor(arcadeScoreValue / 10);
             const targets = arcadeEnemies.slice();
@@ -6278,7 +6324,7 @@
             arcadeEnemies = [];
             arcadeScoreValue += targets.length;
             updateArcadeHud();
-            showPowerBanner("NOVA • " + targets.length + " DESTROYED");
+            showPowerBanner("BOOM • " + targets.length + " DESTROYED");
             const newLevel = 1 + Math.floor(arcadeScoreValue / 10);
             if (newLevel > previousLevel) showDefenseLevelEffect(newLevel);
         } else {
@@ -6414,6 +6460,7 @@
         const powerInfo = document.getElementById("defensePowerInfo");
         powerInfo.hidden = mode !== "defense";
         powerInfo.open = false;
+        if (window.KeyboardShortcuts) KeyboardShortcuts.render();
         const input = document.getElementById("arcadeInput");
         input.value = "";
         input.disabled = false;
@@ -6530,6 +6577,17 @@
 
     document.getElementById("ghostRaceInput").addEventListener("input", updateGhostRace);
     document.getElementById("arcadeInput").addEventListener("input", handleArcadeInput);
+    function clearArcadeText() {
+        if (!arcadeActive || (arcadeLastMode !== "defense" && arcadeLastMode !== "survival")) return;
+        const input = document.getElementById("arcadeInput");
+        input.value = "";
+        input.focus({ preventScroll: true });
+        input.setSelectionRange(0, 0);
+    }
+    document.getElementById("arcadeClearText").addEventListener("pointerdown", function(event) {
+        event.preventDefault(); // Keep the input focused and the mobile keyboard open.
+    });
+    document.getElementById("arcadeClearText").addEventListener("click", clearArcadeText);
 
 
     /* =========================================================
@@ -9277,7 +9335,7 @@
         }
 
         /* BRAND HEADER */
-        if (window.WarriorRewards) WarriorRewards.drawBanner(ctx, width);
+        if (typeof window.WarriorRewards?.drawBanner === 'function') WarriorRewards.drawBanner(ctx, width);
         const avatarSource = document.getElementById("profileAvatarImage");
         if (profileAvatarData && avatarSource && avatarSource.complete && avatarSource.naturalWidth) {
             ctx.save();
@@ -9330,7 +9388,7 @@
 
         /* PLAYER + RANK HERO */
         panelRect(60, 202, 960, 245, 30);
-        label("WARRIOR IDENTITY", 95, 247);
+        label("PLAYER PROFILE", 95, 247);
         const safeName = profileName || "YOUR NAME";
         fitText(safeName, 650, 58, 1000);
         ctx.fillStyle = white;
@@ -9425,7 +9483,7 @@
         ctx.fillText("SHARE YOUR DAMAGE REPORT", 1020, 1332);
         ctx.textAlign = "left";
 
-        if (window.WarriorRewards) WarriorRewards.decorateCard(ctx, width);
+        if (typeof window.WarriorRewards?.decorateCard === 'function') WarriorRewards.decorateCard(ctx, width);
         return canvas;
 
     }
@@ -9440,6 +9498,8 @@
 
 
     function generateShareImage() {
+        const generationStatus = document.getElementById('cardGenerationStatus');
+        try {
 
         generatedCanvas =
             createProfileCard();
@@ -9480,7 +9540,15 @@
         document
             .getElementById("shareOverlay")
             .classList.add("show");
-
+        if (generationStatus) generationStatus.textContent = '';
+        return true;
+        } catch(error) {
+            generatedCanvas = null;
+            generatedImageData = '';
+            if (generationStatus) generationStatus.textContent = 'Could not generate the card. Try reloading the app. If this continues, try resetting the avatar.';
+            console.error('Profile card generation failed:', error);
+            return false;
+        }
     }
 
 
@@ -9489,7 +9557,7 @@
     ========================================================= */
 
     function shareStats() {
-        generateShareImage();
+        if (!generateShareImage()) return;
 
         const status = document.getElementById("exportStatus");
         if (status) {
@@ -9807,11 +9875,12 @@
 <script src="rewards-core.js"></script>
 <script src="treasure.js"></script>
 <script src="rewards.js"></script>
+<script src="shortcuts.js"></script>
 <script>
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=26", { updateViaCache: "none" })
+                .register("./sw.js?v=29", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);

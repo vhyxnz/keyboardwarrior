@@ -3,8 +3,6 @@
     const engine = RewardEngine;
     let state = engine.fresh();
     let toastTimer;
-    const bannerImages = {};
-    ['default', 'sunset', 'matrix'].forEach(key => { const img = new Image(); img.src = './banner-' + key + '.svg'; bannerImages[key] = img; });
     function read() {
         try { return engine.normalize(JSON.parse(localStorage.getItem('kw_rewards'))); }
         catch(error) { return engine.fresh(); }
@@ -34,7 +32,7 @@
     const banner = document.createElement('div');
     banner.id = 'warriorBanner';
     banner.className = 'warrior-banner';
-    banner.innerHTML = '<span>WARRIOR IDENTITY</span><strong id="bannerPlayerLevel">LEVEL 1</strong>';
+    banner.innerHTML = '<span>PLAYER PROFILE</span><strong id="bannerPlayerLevel">LEVEL 1</strong>';
     profileCard.before(banner);
     const title = document.createElement('div');
     title.id = 'warriorTitle';
@@ -198,12 +196,36 @@
     }
     function drawBanner(ctx, width) {
         const bannerItem = itemFor('banner');
-        const img = bannerImages[bannerItem ? bannerItem.id.replace('banner-', '') : 'default'];
-        if (img.complete && img.naturalWidth) {
-            ctx.save(); ctx.drawImage(img, 0, 0, width, 215);
-            const shade = ctx.createLinearGradient(0,0,width,0); shade.addColorStop(0,'#080b12ee'); shade.addColorStop(1,'#080b1244');
-            ctx.fillStyle = shade; ctx.fillRect(0,0,width,215); ctx.restore();
+        // Draw export artwork directly: local-file/WebView SVG images can taint
+        // a canvas or fail to load offline, preventing PNG serialization.
+        ctx.save(); ctx.scale(width / 960, 215 / 240);
+        const style = bannerItem ? bannerItem.id : 'default';
+        ctx.fillStyle = style === 'banner-sunset' ? '#67345d' : style === 'banner-matrix' ? '#092328' : '#1d203c';
+        ctx.fillRect(0,0,960,240);
+        function path(points, color, fill) {
+            ctx.beginPath(); points.forEach((p,i) => i ? ctx.lineTo(p[0],p[1]) : ctx.moveTo(p[0],p[1]));
+            if (fill) { ctx.closePath(); ctx.fillStyle=color; ctx.fill(); } else { ctx.strokeStyle=color; ctx.lineWidth=2; ctx.stroke(); }
         }
+        if (style === 'banner-sunset') {
+            ctx.fillStyle='#ffcf8a'; ctx.beginPath(); ctx.arc(725,100,65,0,Math.PI*2); ctx.fill();
+            ctx.fillStyle='#67345d'; [112,128,144,160].forEach(y=>ctx.fillRect(655,y,140,5));
+            path([[0,210],[126,128],[229,185],[393,74],[510,169],[575,126],[685,181],[779,122],[960,199],[960,240],[0,240]],'#623460',true);
+            path([[0,235],[170,166],[269,205],[428,134],[522,200],[616,177],[704,202],[836,143],[960,193],[960,240],[0,240]],'#352441',true);
+            path([[0,240],[148,220],[248,232],[400,194],[546,228],[679,210],[817,221],[960,195],[960,240]],'#181c31',true);
+        } else if (style === 'banner-matrix') {
+            for(let y=0;y<240;y+=24) path([[0,y],[960,y]],'#133b3c');
+            for(let x=0;x<960;x+=24) path([[x,0],[x,240]],'#133b3c');
+            [60,100,140,180].forEach((y,i)=>{path([[960,y],[850,y],[810,y+20],[724,y+20]],'#35cda5');path([[626,y+20],[520,y+20],[480,y+40],[220+i*45,y+40]],'#35cda5');});
+            ctx.fillStyle='#102e35'; ctx.fillRect(626,69,98,110);ctx.strokeStyle='#8bffcc';ctx.strokeRect(626,69,98,110);
+            path([[649,108],[667,124],[649,140]],'#a7ffde');path([[679,140],[701,140]],'#a7ffde');
+        } else {
+            const stars=[[440,188],[507,101],[585,146],[665,51],[739,144],[845,95],[899,182]];
+            path(stars,'#8a84bf');
+            stars.concat([[208,159],[315,38],[814,31],[907,48]]).forEach(([x,y])=>{ctx.fillStyle='#d8d9ff';ctx.beginPath();ctx.arc(x,y,3,0,Math.PI*2);ctx.fill();});
+            ctx.strokeStyle='#8a84bf';ctx.beginPath();ctx.arc(665,51,25,0,Math.PI*2);ctx.stroke();
+        }
+        const shade=ctx.createLinearGradient(0,0,960,0);shade.addColorStop(0,'rgba(8,11,18,.9)');shade.addColorStop(1,'rgba(8,11,18,.2)');
+        ctx.fillStyle=shade;ctx.fillRect(0,0,960,240);ctx.restore();
     }
     window.WarriorRewards = {award,selectProfile,render,owns,openShop,decorateCard,avatarChanged,drawBanner};
     window.awardWarriorRewards = function(event) {
