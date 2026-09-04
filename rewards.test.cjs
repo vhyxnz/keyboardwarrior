@@ -29,7 +29,7 @@ assert.equal(r.personalBest,false);
 r=e.award(r.state,event(13,{mode:'ghostrace',key:'ghost:phrase2',metric:25,lowerIsBetter:true}));
 assert.equal(r.personalBest,true);
 r=e.award(r.state,event(14,{mode:'defense',units:50,combo:50}));
-assert(r.badges.includes('defender') && r.badges.includes('combo'));
+assert(r.badges.includes('defender') && !r.badges.includes('combo'));
 for(let i=15;i<=25;i++) r=e.award(r.state,event(i));
 assert(r.badges.includes('veteran'));
 assert.deepEqual(e.normalize(JSON.parse(JSON.stringify(r.state))),r.state);

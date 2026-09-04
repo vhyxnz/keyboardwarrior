@@ -1,0 +1,46 @@
+#chaosScreen { background:radial-gradient(ellipse at 100% 0,#762c642b,transparent 45%),radial-gradient(ellipse at 0 65%,#263c7629,transparent 45%); }
+.chaos-hero { position:relative; isolation:isolate; padding:20px 17px 18px; margin-bottom:19px; border:1px solid #7e669b66; border-radius:20px; background:repeating-linear-gradient(135deg,transparent 0 17px,#ffffff04 18px 19px),#171525; overflow:hidden; }
+.chaos-hero::after { content:''; position:absolute; width:180px; height:180px; right:-95px; top:-65px; border:25px solid #fb718530; border-radius:50%; z-index:-1; }
+.chaos-eyebrow { font:800 9px/1.5 monospace; letter-spacing:2px; color:#b9a8d8; margin-bottom:10px; }
+#chaosScreen .chaos-hero .page-title { font-size:36px; line-height:1.1; font-weight:1000; letter-spacing:-1.5px; color:#f7ecff; text-shadow:2px 2px 0 #b63e8166; padding-right:40px; margin:0 0 12px; }
+#chaosScreen .chaos-hero .page-title::after { display:none; }
+#chaosScreen .chaos-hero .page-subtitle { color:#c2b5d2; font-size:12px; line-height:1.5; margin:0; max-width:260px; }
+.chaos-sticker { position:absolute; right:10px; top:53px; background:#e8ff87; color:#272332; padding:6px; border:2px solid #272332; border-radius:5px; font:900 14px monospace; transform:rotate(12deg); box-shadow:3px 3px 0 #0006; }
+#chaosScreen .chaos-card { --chaos-color:#c4a0ff; position:relative; display:grid; grid-template-columns:76px minmax(0,1fr); gap:10px 13px; margin:12px 0; padding:15px; border:1px solid color-mix(in srgb,var(--chaos-color) 38%,#263044); border-radius:18px; background:linear-gradient(115deg,color-mix(in srgb,var(--chaos-color) 9%,#131722),#131722 70%); box-shadow:0 5px 0 #080b12; transition:border-color .2s,box-shadow .2s; }
+#chaosScreen [data-chaos="roast"] { --chaos-color:#ff987b; }
+#chaosScreen [data-chaos="mirror"] { --chaos-color:#6ce5ea; }
+#chaosScreen [data-chaos="treasure"] { --chaos-color:#f6ce70; }
+.chaos-art { width:76px; height:80px; align-self:center; display:grid; place-items:center; border:1px solid color-mix(in srgb,var(--chaos-color) 45%,transparent); border-radius:17px; color:var(--chaos-color); background:radial-gradient(circle,color-mix(in srgb,var(--chaos-color) 14%,#151525),#11151f); transform:rotate(-5deg); }
+.chaos-art svg { width:67px; height:67px; }
+[data-chaos="roast"] .chaos-art { transform:rotate(5deg); border-radius:50% 45% 50% 30%; }
+[data-chaos="mirror"] .chaos-art { transform:rotate(-3deg); box-shadow:4px 4px 0 #6ce5ea15; }
+[data-chaos="treasure"] .chaos-art { transform:rotate(4deg); }
+.chaos-mode-tag { display:block; color:var(--chaos-color); font:800 8px/1.5 monospace; letter-spacing:1px; }
+#chaosScreen .chaos-card h2 { margin:5px 0; color:#f4f2fa; font-size:20px; line-height:1.2; }
+.chaos-slogan { color:#d4cddb; font-size:11px; line-height:1.4; }
+#chaosScreen .chaos-card > p { grid-column:1 / -1; margin:0; font-size:12px; line-height:1.55; color:#aeb8c8; }
+#chaosScreen .chaos-card > .action-btn { grid-column:1 / -1; display:flex; align-items:center; justify-content:space-between; margin:0; padding:11px 13px; min-height:44px; background:var(--chaos-color); color:#131722; font-size:11px; box-shadow:none; }
+.chaos-start-arrow { font-size:20px; line-height:1; }
+#chaosScreen > .secondary-btn { margin-top:19px; }
+@media(hover:hover) { #chaosScreen .chaos-card:hover { border-color:var(--chaos-color); box-shadow:0 5px 0 #080b12,0 0 20px color-mix(in srgb,var(--chaos-color) 12%,transparent); } .chaos-card:hover .chaos-art { animation:chaosBob 1.8s ease-in-out infinite alternate; } }
+@keyframes chaosBob { to { transform:translateY(-3px) rotate(3deg); } }
+@media(prefers-reduced-motion:reduce) { #chaosScreen .chaos-card { transition:none; } .chaos-card:hover .chaos-art { animation:none; } }
+@media(max-width:360px) { #chaosScreen .chaos-card { grid-template-columns:62px minmax(0,1fr); gap:9px; padding:12px; } .chaos-art { width:60px;height:68px; }.chaos-art svg { width:55px;height:55px; } #chaosScreen .chaos-card h2 { font-size:18px; }.chaos-mode-tag { letter-spacing:.3px; } }
+.kw-shop-icon { width:24px; height:24px; flex-shrink:0; vertical-align:middle; }
+#openCosmeticShop { display:flex; align-items:center; justify-content:center; gap:9px; }
+#modeScreen > .mode-card { border-radius:19px; border:1px solid #303a4a; background:linear-gradient(135deg,#1b202b,#141922); }
+#modeScreen > .mode-card > h2 { font-size:19px; margin-bottom:5px; }
+#modeScreen > .mode-card > p { font-size:12px; color:#aeb8c8; }
+#modeScreen .battle-choice { --choice-color:#7edbb3; display:grid; grid-template-columns:42px minmax(0,1fr); column-gap:12px; row-gap:3px; align-items:center; padding:14px; border:1px solid #354050; border-radius:14px; background:#151b25; }
+#modeScreen .battle-choice[data-tone="flame"] { --choice-color:#ff9b78; }
+#modeScreen .battle-choice[data-tone="gold"] { --choice-color:#eed17d; }
+#modeScreen .battle-choice[data-tone="pink"] { --choice-color:#fa8cab; }
+.battle-choice-icon { grid-row:1 / 3; display:grid; place-items:center; width:42px; height:46px; border:1px solid color-mix(in srgb,var(--choice-color) 32%,transparent); border-radius:12px; background:color-mix(in srgb,var(--choice-color) 9%,#151b25); color:var(--choice-color); }
+.battle-choice-icon svg { width:27px; height:27px; }
+.ranked-mode-icon { display:inline-block; width:20px; height:20px; margin-left:5px; vertical-align:middle; color:#eed17d; }
+#modeScreen .battle-choice > strong { grid-column:2; margin:0; padding-right:25px; font-size:15px; }
+#modeScreen .battle-choice > span { grid-column:2; margin:0; font-size:12px; line-height:1.5; }
+#modeScreen .battle-choice.selected { padding:14px; border-color:var(--choice-color); background:linear-gradient(110deg,color-mix(in srgb,var(--choice-color) 12%,#151b25),#151b25); box-shadow:0 0 0 1px color-mix(in srgb,var(--choice-color) 12%,transparent); }
+#modeScreen .battle-choice.selected::after { width:19px; height:19px; top:12px; right:10px; background:var(--choice-color); color:#111923; font-size:11px; }
+#modeScreen .battle-choice:focus-visible { outline:2px solid var(--choice-color); outline-offset:3px; }
+@media(max-width:360px) { #modeScreen .battle-choice,#modeScreen .battle-choice.selected { padding:11px; column-gap:9px; grid-template-columns:36px minmax(0,1fr); } .battle-choice-icon { width:36px;height:42px; } }

@@ -2539,7 +2539,8 @@
         }
 
     </style>
-    <link rel="stylesheet" href="rewards.css">
+<link rel="stylesheet" href="rewards.css">
+<link rel="stylesheet" href="chaos-view.css">
 </head>
 
 <body class="profile-select">
@@ -2728,7 +2729,7 @@
                         id="noMercyOption"
                         onclick="selectDifficulty('nomercy')">
 
-                    <strong>No Mercy</strong>
+                    <strong>No Mercy <svg class="ranked-mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Ranked"><title>Ranked</title><path d="m12 2 7 4v7l-7 9-7-9V6z"/><path d="m8 12 4-4 4 4m-8 4 4-4 4 4"/></svg></strong>
 
                     <span>
                     No Backspace. Tight time limit based on phrase length. Miss the deadline and your score drops, but you can still finish.
@@ -4650,6 +4651,7 @@
         hideAllScreens();
         const screen = document.getElementById("chaosScreen");
         if (screen) screen.classList.add("active");
+        window.scrollTo({top:0,behavior:'instant'});
     }
 
     function openModeScreen() {
@@ -6388,6 +6390,12 @@
             enemy.el.style.top = enemy.y + "px";
             enemy.el.classList.toggle("danger", enemy.y >= 270);
             if (enemy.y >= 340) {
+                const input = document.getElementById("arcadeInput");
+                const typed = input.value.trim().toLowerCase();
+                // Preserve typing aimed at another live target.
+                if (typed && (enemy.word.startsWith(typed) || !arcadeEnemies.some(function(other) {
+                    return other !== enemy && other.y < 340 && other.word.startsWith(typed);
+                }))) input.value = "";
                 enemy.el.remove();
                 arcadeEnemies.splice(arcadeEnemies.indexOf(enemy), 1);
                 arcadeLivesValue--;
@@ -9335,6 +9343,7 @@
         }
 
         /* BRAND HEADER */
+        if (window.CosmeticArt) CosmeticArt.card(ctx, profileCardStyle, width, height);
         if (typeof window.WarriorRewards?.drawBanner === 'function') WarriorRewards.drawBanner(ctx, width);
         const avatarSource = document.getElementById("profileAvatarImage");
         if (profileAvatarData && avatarSource && avatarSource.complete && avatarSource.naturalWidth) {
@@ -9835,6 +9844,8 @@
             if (actions) actions.style.display = "flex";
 
             // Focus after the screen has become visible.
+            // Reset all mode hints, placeholders and special controls together.
+            preparePhrase();
             setTimeout(function() {
                 if (input) input.focus();
             }, 100);
@@ -9873,14 +9884,17 @@
 </script>
 
 <script src="rewards-core.js"></script>
+<script src="cosmetics.js"></script>
 <script src="treasure.js"></script>
+<script src="chaos-view.js"></script>
 <script src="rewards.js"></script>
 <script src="shortcuts.js"></script>
+<script src="profile-layout.js"></script>
 <script>
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=29", { updateViaCache: "none" })
+                .register("./sw.js?v=38", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);

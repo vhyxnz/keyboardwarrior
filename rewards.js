@@ -32,7 +32,7 @@
     const banner = document.createElement('div');
     banner.id = 'warriorBanner';
     banner.className = 'warrior-banner';
-    banner.innerHTML = '<span>PLAYER PROFILE</span><strong id="bannerPlayerLevel">LEVEL 1</strong>';
+    banner.innerHTML = '<div id="bannerCoins" class="banner-coins" role="status" aria-label="0 Key Coins"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="6"/><path d="M10 8v8m5-8-5 4 5 4"/></svg><b id="bannerCoinBalance">0</b></div><strong id="bannerPlayerLevel">LEVEL 1</strong>';
     profileCard.before(banner);
     const title = document.createElement('div');
     title.id = 'warriorTitle';
@@ -45,6 +45,61 @@
     panel.innerHTML = '<div class="reward-heading"><h2>Warrior Rewards</h2><span id="rewardSessionLabel"></span></div><div class="reward-wallet"><div><strong id="rewardLevel">1</strong><span>PLAYER LEVEL</span></div><div><strong id="rewardCoins">0</strong><span>KEY COINS</span></div><div><strong id="rewardXP">0</strong><span>TOTAL XP</span></div></div><progress id="rewardProgress" max="100" value="0" aria-label="Progress to next player level"></progress><p id="rewardProgressLabel"></p><div class="reward-badges" id="rewardBadges"></div><button type="button" class="action-btn" id="openCosmeticShop">COSMETIC SHOP</button><details class="reward-rules"><summary>How to earn rewards</summary><p>Qualifying rounds earn 20 XP + 10 Key Coins. A new personal best adds 10 XP + 5 coins. Every 10 rewarded rounds adds 25 XP + 25 coins. Each new badge grants 20 coins.</p><p>Every 100 XP raises your player level. Your skill-based rank is unchanged. A run must last at least 3 seconds and include successful typing; quitting an unfinished phrase does not count.</p><p>Rewards start from new rounds played with this update. Existing stats are kept. Guest rewards are temporary; Warrior rewards are included in data backups.</p></details>';
     document.querySelector('#statsScreen .profile-editor').after(panel);
     panel.querySelector('#openCosmeticShop').addEventListener('click', openShop);
+    panel.querySelector('#openCosmeticShop').innerHTML='<svg class="kw-shop-icon" viewBox="0 0 32 32" fill="none" aria-hidden="true"><rect x="2" y="2" width="28" height="28" rx="7" stroke="currentColor" stroke-width="2"/><path d="M5 24h22" stroke="currentColor" stroke-width="1.5"/><text x="16" y="20" text-anchor="middle" fill="currentColor" font-family="Arial,sans-serif" font-weight="900" font-size="12">KW</text></svg><span>Shop</span>';
+    const achievementHelp=document.createElement('p');achievementHelp.className='reward-rules';
+    achievementHelp.textContent='Achievements · Tap a badge for details';
+    document.getElementById('rewardBadges').before(achievementHelp);
+    const dailyPanel=document.createElement('section');dailyPanel.className='daily-panel';dailyPanel.setAttribute('aria-label','Daily challenges');
+    dailyPanel.innerHTML='<h3>Daily Challenges</h3><p id="dailyReset" class="reward-rules"></p><div id="dailyTasks"></div><details class="daily-rules"><summary>Challenge rules</summary><p>Tap a challenge for its goal. Only qualifying rounds finished today count (at least 3 seconds with successful typing). Rewards are credited automatically once per challenge. No reward multiplier affects these payouts. Guest progress lasts for this session only.</p></details>';
+    document.getElementById('rewardBadges').after(dailyPanel);
+    let selectedBadge = null;
+    const badgeDetails=document.createElement('section');badgeDetails.id='badgeDetails';badgeDetails.className='badge-details';badgeDetails.hidden=true;badgeDetails.setAttribute('aria-label','Achievement details');
+    document.getElementById('rewardBadges').after(badgeDetails);
+    const badgeIcons = {
+        first:'<path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/>',
+        survivor:'<path d="M20.8 4.8a5.5 5.5 0 0 0-7.8 0L12 6l-1-1.2a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.4a5.5 5.5 0 0 0 0-7.8Z"/><path d="M3 12h5l2-4 4 8 2-4h5"/>',
+        ghost:'<path d="M5 21V10a7 7 0 0 1 14 0v11l-3-2-4 2-4-2z"/><path d="M9 10v2m6-2v2"/>',
+        combo:'<path d="m13 2-9 12h7l-1 8 10-13h-8z"/>',
+        defender:'<path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6z"/><path d="m8 12 3 3 5-6"/>',
+        veteran:'<path d="M8 3h8v6a4 4 0 0 1-8 0zM8 5H4v3a4 4 0 0 0 4 4m8-7h4v3a4 4 0 0 1-4 4M12 13v6m-5 2h10m-8-2h6"/>'
+    };
+    function renderBadges() {
+        const list=document.getElementById('rewardBadges');list.replaceChildren();
+        engine.badges.forEach(badge=>{
+            const view=engine.badgeView(state,badge), tier=view.current;
+            const unlocked=state.badges.includes(badge.id), selected=selectedBadge===badge.id;
+            const button=document.createElement('button');button.type='button';button.className='reward-badge'+(unlocked?' unlocked':'')+(selected?' selected':'');
+            if(tier)button.dataset.tier=tier.name.toLowerCase();
+            button.setAttribute('aria-expanded',String(selected));button.setAttribute('aria-controls','badgeDetails');button.setAttribute('aria-label',badge.name+' — '+(tier?tier.name:unlocked?'Earned':'Locked')+'. Show unlock details');
+            button.innerHTML='<span class="achievement-emblem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+badgeIcons[badge.id]+'</svg></span>';
+            const name=document.createElement('strong');name.textContent=badge.name;
+            const status=document.createElement('small');status.textContent=tier?tier.name.toUpperCase():unlocked?'EARNED':'LOCKED';button.append(name,status);
+            button.addEventListener('click',()=>{selectedBadge=selected?null:badge.id;renderBadges();list.children[engine.badges.indexOf(badge)].focus({preventScroll:true});});list.appendChild(button);
+        });
+        const badge=engine.badges.find(b=>b.id===selectedBadge);badgeDetails.hidden=!badge;badgeDetails.replaceChildren();
+        if(!badge)return;
+        const heading=document.createElement('strong');heading.textContent=badge.name;
+        const close=document.createElement('button');close.type='button';close.className='badge-details-close';close.textContent='×';close.setAttribute('aria-label','Close achievement details');
+        close.addEventListener('click',()=>{const index=engine.badges.indexOf(badge);selectedBadge=null;renderBadges();list.children[index].focus({preventScroll:true});});
+        const description=document.createElement('p');description.textContent=badge.description;
+        const reward=document.createElement('small');reward.textContent=state.badges.includes(badge.id)?'Earned · 20 Key Coins awarded':'Reward: 20 Key Coins · Awarded once';
+        const rule=document.createElement('p');rule.className='badge-qualifier';rule.textContent='Checked when a round ends: at least 3 seconds with successful typing.';
+        badgeDetails.append(heading,close,description,reward,rule);
+        if(badge.tiers){
+            const view=engine.badgeView(state,badge);
+            description.textContent='Goal: '+view.unit+'.';
+            reward.textContent='20 Key Coins per tier · Each awarded once';
+            const levels=document.createElement('div');levels.className='badge-tier-list';
+            view.levels.forEach(t=>{
+                const row=document.createElement('div');row.className='badge-tier-row';row.dataset.tier=t.name.toLowerCase();
+                const label=document.createElement('span');label.textContent=t.name+' · '+(t.earned?'Earned':Math.min(Math.floor(view.value),t.goal)+' / '+t.goal);
+                const meter=document.createElement('progress');meter.max=t.goal;meter.value=t.earned?t.goal:Math.min(view.value,t.goal);meter.setAttribute('aria-label',t.name+' progress');
+                const goal=document.createElement('small');goal.textContent=t.goal+' '+view.unit;
+                row.append(label,goal,meter);levels.append(row);
+            });
+            rule.before(levels);
+        }
+    }
 
     const dialog = document.createElement('dialog');
     dialog.id = 'cosmeticShop';
@@ -74,11 +129,22 @@
         engine.catalog.filter(i => filter === 'all' || i.category === filter).forEach(item => {
             const card = document.createElement('article');
             card.className = 'shop-item';
-            const preview = document.createElement('div');
+            const preview = document.createElement('button');
+            preview.type='button';preview.setAttribute('aria-label','Enlarge '+item.name+' preview');preview.setAttribute('aria-expanded','false');
+            preview.addEventListener('click',()=>{const expanded=card.classList.toggle('preview-expanded');preview.setAttribute('aria-expanded',String(expanded));});
             preview.className = 'shop-preview shop-preview-' + item.category;
             preview.style.setProperty('--preview-color', item.color);
             preview.textContent = item.symbol || (item.category === 'title' ? 'Aa' : item.category === 'avatar' ? 'KW' : '✦');
-            if (item.category === 'banner') { preview.textContent = ''; preview.style.backgroundImage = 'url("./' + item.id + '.svg")'; preview.setAttribute('role', 'img'); preview.setAttribute('aria-label', item.description); }
+            if (item.category === 'banner') { preview.textContent = ''; preview.style.backgroundImage = 'url("./' + item.id + '.svg")'; preview.setAttribute('aria-label', 'Enlarge '+item.name+' preview: '+item.description); }
+            preview.dataset.cosmetic=item.id;
+            if(['avatar','frame'].includes(item.category)) {
+                preview.textContent='';const art=document.createElement('img');art.src=CosmeticArt.image(item.id);art.alt=item.name+' design';preview.appendChild(art);
+            } else if(item.category==='card') {
+                preview.textContent='';const canvas=document.createElement('canvas');canvas.width=180;canvas.height=110;const c=canvas.getContext('2d');c.fillStyle='#141722';c.fillRect(0,0,180,110);CosmeticArt.card(c,item.value,180,110);c.fillStyle='#e6edf9';c.font='bold 12px Arial';c.fillText(item.name.toUpperCase(),12,33);c.globalAlpha=.55;[49,65,81].forEach(y=>c.fillRect(12,y,100,4));preview.appendChild(canvas);
+            } else if(item.category!=='banner') {
+                preview.textContent='';const sample=document.createElement('span');sample.className='cosmetic-sample cosmetic-sample-'+item.category;
+                sample.textContent=item.category==='title'?item.name:item.category==='base'?'BASE':item.category==='trail'?'word':'';preview.appendChild(sample);
+            }
             const heading = document.createElement('h3');
             heading.textContent = item.name;
             const description = document.createElement('p');
@@ -113,7 +179,7 @@
     function purchaseAndEquip(item) {
         try {
             commit(engine.equip(engine.purchase(state, item.id), item.id));
-            if (item.category === 'avatar') selectPresetAvatar(item.symbol, '#142034', item.color, true);
+            if (item.category === 'avatar') { applyCollectibleAvatar(item); updateProfileDisplay(); }
             if (item.category === 'card') selectProfileCardStyle(item.value);
             invalidateCard();
             render();
@@ -126,27 +192,24 @@
         const level = 1 + Math.floor(state.xp / 100);
         document.getElementById('rewardLevel').textContent = level;
         document.getElementById('rewardCoins').textContent = state.coins;
+        document.getElementById('bannerCoinBalance').textContent = state.coins.toLocaleString();
+        document.getElementById('bannerCoins').setAttribute('aria-label', state.coins.toLocaleString() + ' Key Coins');
         document.getElementById('rewardXP').textContent = state.xp;
         document.getElementById('rewardProgress').value = state.xp % 100;
         document.getElementById('rewardProgressLabel').textContent = (100 - state.xp % 100) + ' XP to level ' + (level + 1);
         document.getElementById('rewardSessionLabel').textContent = currentAppProfile === 'guest' ? 'SESSION ONLY' : 'SAVED PROFILE';
         document.getElementById('bannerPlayerLevel').textContent = 'LEVEL ' + level;
-        const list = document.getElementById('rewardBadges');
-        list.replaceChildren();
-        engine.badges.forEach(badge => {
-            const el = document.createElement('span');
-            const unlocked = state.badges.includes(badge.id);
-            el.className = 'reward-badge' + (unlocked ? ' unlocked' : '');
-            el.textContent = (unlocked ? '★ ' : '◇ ') + badge.name;
-            el.title = (unlocked ? 'Earned: ' : 'Locked: ') + badge.description;
-            el.setAttribute('aria-label', el.title);
-            list.appendChild(el);
-        });
+        renderBadges();
         const root = document.documentElement;
         const frame = itemFor('frame'), ghost = itemFor('ghost');
+        let frameArt=document.getElementById('equippedFrameArt');
+        if(frame && !frameArt){frameArt=document.createElement('img');frameArt.id='equippedFrameArt';frameArt.alt='';frameArt.className='equipped-frame-art';document.getElementById('profileAvatarButton').appendChild(frameArt);}
+        if(frameArt){frameArt.hidden=!frame;if(frame)frameArt.src=CosmeticArt.image(frame.id);}
+        const avatar=itemFor('avatar');
+        if(avatar){const data=CosmeticArt.image(avatar.id);if(profileAvatarData!==data){try { applyCollectibleAvatar(avatar); } catch(error) { /* Keep the existing avatar if storage is full. */ }}}
         root.style.setProperty('--reward-frame', frame ? frame.color : 'var(--accent)');
         root.style.setProperty('--reward-ghost', ghost ? ghost.color : '#9b7bff');
-        ['banner','hit','trail','base','lane'].forEach(category => {
+        ['banner','hit','trail','base','lane','ghost','title'].forEach(category => {
             root.dataset['reward' + category[0].toUpperCase() + category.slice(1)] = state.equipped[category] || 'default';
         });
         const titleItem = itemFor('title');
@@ -155,19 +218,50 @@
         document.querySelectorAll('[data-reward-card]').forEach(button => {
             button.textContent = button.dataset.rewardCard.toUpperCase() + (owns('card-' + button.dataset.rewardCard) ? '' : ' · SHOP');
         });
+        renderDaily();
         if (dialog.open) renderShop();
     }
+    function applyCollectibleAvatar(item) {
+        const data=CosmeticArt.image(item.id);
+        if(currentAppProfile!=='guest')localStorage.setItem('kw_profile_avatar',data);
+        profileAvatarData=data;
+        const image=document.getElementById('profileAvatarImage');image.src=data;
+        document.getElementById('profileAvatarButton').classList.add('has-image');
+    }
+    function renderDaily() {
+        const view=engine.dailyView(state);
+        document.getElementById('dailyReset').textContent=view.state.day+' · Resets at midnight'+(currentAppProfile==='guest'?' · Guest':'');
+        const container=document.getElementById('dailyTasks');container.replaceChildren();
+        view.tasks.forEach(task=>{
+            const card=document.createElement('details');card.className='daily-task'+(task.claimed?' completed':'');
+            const summary=document.createElement('summary');
+            const name=document.createElement('strong');name.textContent=task.name;
+            const desc=document.createElement('p');desc.textContent=task.description;
+            const progress=document.createElement('progress');progress.max=task.target;progress.value=task.value;progress.setAttribute('aria-label',task.name+' progress');
+            const count=document.createElement('span');count.className='daily-count';count.textContent=task.claimed?'✓ Done':Math.floor(task.value)+' / '+task.target;
+            const label=document.createElement('small');label.textContent=task.xp+' XP + '+task.coins+' coins'+(task.claimed?' · Awarded':'');
+            summary.append(name,count,progress,label);card.append(summary,desc);container.appendChild(card);
+        });
+    }
+    let dayTimer;
+    function watchDay() {
+        clearTimeout(dayTimer);renderDaily();const now=new Date(), next=new Date(now.getFullYear(),now.getMonth(),now.getDate()+1);
+        dayTimer=setTimeout(watchDay,Math.max(1000,next-now+100));
+    }
+    document.addEventListener('visibilitychange',()=>{if(!document.hidden)watchDay();});
     function award(event) {
         try {
             const result = engine.award(state, event);
             if (!result.xp) return;
             commit(result.state);
             render();
-            const names = engine.badges.filter(b => result.badges.includes(b.id)).map(b => b.name);
+            const names = engine.badges.flatMap(b => b.tiers?b.tiers.filter(t=>result.badges.includes(t.id)).map(t=>b.name+' '+t.name):result.badges.includes(b.id)?[b.name]:[]);
+            if(result.dailyCompleted?.length) names.push('Daily: '+result.dailyCompleted.join(', '));
             notify('+' + result.xp + ' XP · +' + result.coins + ' Key Coins' + (result.personalBest ? ' · Personal best!' : '') + (names.length ? ' · ' + names.join(', ') : ''));
         } catch(error) { notify('Rewards could not be saved. Check available device storage.'); }
     }
     function selectProfile(type) {
+        selectedBadge=null;
         state = type === 'guest' ? engine.fresh() : read();
         if (type === 'guest') profileCardStyle = 'classic';
         clearTimeout(toastTimer);
@@ -178,8 +272,7 @@
         const bannerItem = itemFor('banner'), frame = itemFor('frame'), titleItem = itemFor('title');
         ctx.save();
         if (frame) {
-            ctx.strokeStyle = frame.color; ctx.lineWidth = 7;
-            roundRect(ctx,60,58,112,112,30); ctx.stroke();
+            CosmeticArt.frame(ctx,frame.id,60,58,112);
         }
         if (titleItem) {
             ctx.fillStyle = titleItem.color; ctx.font = '800 18px Arial'; ctx.textAlign = 'right';
@@ -229,6 +322,7 @@
     }
     window.WarriorRewards = {award,selectProfile,render,owns,openShop,decorateCard,avatarChanged,drawBanner};
     window.awardWarriorRewards = function(event) {
+        event.day=engine.dayKey();
         event.key = language + ':' + attitude + ':' + event.mode;
         if (event.scope) event.key += ':' + Array.from(event.scope).map(c => c.codePointAt(0).toString(16)).join('-');
         award(event);
@@ -240,4 +334,5 @@
     };
     state = currentAppProfile === 'guest' ? engine.fresh() : read();
     render();
+    watchDay();
 })();
