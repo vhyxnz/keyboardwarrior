@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="240" viewBox="0 0 960 240">
+<defs><linearGradient id="sky"><stop stop-color="#101526"/><stop offset="1" stop-color="#28204c"/></linearGradient></defs>
+<path fill="url(#sky)" d="M0 0h960v240H0z"/>
+<g fill="none" stroke="#8a84bf" stroke-width="1.5" opacity=".55"><path d="m440 188 67-87 78 45 80-95 74 93 106-49 54 87M507 101l-8-64m86 109 19 67m135-69 10 58"/><circle cx="665" cy="51" r="22"/><circle cx="665" cy="51" r="30"/></g>
+<g fill="#d8d9ff"><circle cx="440" cy="188" r="3"/><circle cx="507" cy="101" r="5"/><circle cx="585" cy="146" r="3"/><circle cx="665" cy="51" r="5"/><circle cx="739" cy="144" r="4"/><circle cx="845" cy="95" r="5"/><circle cx="899" cy="182" r="3"/><circle cx="499" cy="37" r="2"/><circle cx="604" cy="213" r="2"/><circle cx="749" cy="202" r="3"/><circle cx="90" cy="75" r="2"/><circle cx="208" cy="159" r="2"/><circle cx="315" cy="38" r="2"/><circle cx="360" cy="196" r="2"/><circle cx="814" cy="31" r="2"/><path d="m907 38 3 10 10 3-10 3-3 10-3-10-10-3 10-3z"/></g>
+</svg>

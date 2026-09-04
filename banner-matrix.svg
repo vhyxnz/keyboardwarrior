@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="240" viewBox="0 0 960 240">
+<defs><pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0v24" fill="none" stroke="#133b3c" stroke-width="1"/></pattern></defs>
+<path fill="#092328" d="M0 0h960v240H0z"/><path fill="url(#grid)" d="M0 0h960v240H0z"/>
+<g fill="none" stroke="#35cda5" stroke-width="3"><path d="M960 42H833l-40 40h-69m236 128H850l-44-44h-82M724 102h118l34-34h84M724 143h147l29 29h60M657 69V29L628 0m52 69V0M657 179v38l-23 23M626 83h-98l-36-36H366M626 109H485l-35 35H289M626 140H508l-52 52H175M626 166h-55l-30 30v44"/></g>
+<g fill="#102e35" stroke="#8bffcc" stroke-width="2"><rect x="626" y="69" width="98" height="110" rx="12"/><rect x="640" y="83" width="70" height="82" rx="5"/><circle cx="366" cy="47" r="6"/><circle cx="289" cy="144" r="6"/><circle cx="175" cy="192" r="6"/></g>
+<path fill="none" stroke="#a7ffde" stroke-width="4" d="m656 112 12 12-12 12m22 0h16"/>
+<g fill="#70f7c5"><circle cx="886" cy="42" r="4"/><circle cx="818" cy="102" r="4"/><circle cx="560" cy="83" r="4"/></g>
+</svg>

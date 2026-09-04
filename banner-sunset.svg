@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="240" viewBox="0 0 960 240">
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#331d59"/><stop offset=".65" stop-color="#b84a72"/><stop offset="1" stop-color="#ffb875"/></linearGradient><clipPath id="sun"><circle cx="725" cy="106" r="66"/></clipPath></defs>
+<path fill="url(#sky)" d="M0 0h960v240H0z"/>
+<g fill="#ffcf8a" clip-path="url(#sun)"><path d="M655 35h140v74H655zM655 115h140v9H655zM655 130h140v8H655zM655 145h140v6H655zM655 158h140v14H655z"/></g>
+<g fill="none" stroke="#ffc2b4" stroke-width="2" opacity=".5"><path d="M410 69h130m-75 10h110M810 48h99m-70 10h90"/></g>
+<path fill="#623460" d="m0 209 126-81 103 57 164-111 117 95 65-43 110 55 94-59 181 77v41H0z"/>
+<path fill="#352441" d="m0 235 170-69 99 39 159-71 94 66 94-23 88 25 132-59 124 50v47H0z"/>
+<path fill="#181c31" d="m0 240 148-20 100 12 152-38 146 34 133-18 138 11 143-26v45z"/>
+<g fill="none" stroke="#291e3e" stroke-width="3"><path d="m566 60 9-4 9 4m15-16 10-4 10 4"/></g>
+</svg>
