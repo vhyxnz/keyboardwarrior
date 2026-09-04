@@ -6214,7 +6214,10 @@
         el.style.left = x + "%";
         el.style.top = "-42px";
         arena.appendChild(el);
-        arcadeEnemies.push({ word: word, y: -42, speed: 25 + Math.min(65, arcadeScoreValue * 1.4), el: el });
+        // Later targets must not catch up to an older, slower word.
+        const baseSpeed = 23 + Math.min(57, arcadeScoreValue * .8);
+        const speed = arcadeEnemies.reduce(function(limit, enemy) { return Math.min(limit, enemy.speed); }, baseSpeed);
+        arcadeEnemies.push({ word: word, y: -42, speed: speed, el: el });
         arcadeLastSpawn = now;
     }
 
@@ -6356,7 +6359,7 @@
         startArcadeBase("defense", "Keyboard Defense", "Type enemy words. Tap gold power-ups without interrupting your typing.");
         arcadeLivesValue = 5;
         updateArcadeHud();
-        arcadeLastSpawn = performance.now() - 1500;
+        arcadeLastSpawn = performance.now();
         defenseFreezeUntil = 0;
         nextPowerSpawn = performance.now() + 8000 + Math.random() * 5000;
         arcadeLastFrame = performance.now();
@@ -6367,11 +6370,14 @@
         if (!arcadeActive) return;
         const delta = Math.min(50, now - arcadeLastFrame) / 1000;
         arcadeLastFrame = now;
-        const spawnDelay = Math.max(650, 1900 - arcadeScoreValue * 22);
+        const spawnDelay = Math.max(1200, 3200 - arcadeScoreValue * 20);
+        const minimumGap = arcadeScoreValue < 20 ? 90 : 70;
+        const hasRoom = arcadeEnemies.every(function(enemy) { return enemy.y >= -42 + minimumGap; });
+        const enemyLimit = arcadeScoreValue < 10 ? 3 : arcadeScoreValue < 30 ? 4 : 5;
         const recovering = defenseFreezeUntil > 0 && now < defenseFreezeUntil + 2000;
         // Do not queue new enemies while slowed, or release a catch-up wave afterward.
         if (recovering) arcadeLastSpawn = now;
-        else if (now - arcadeLastSpawn >= spawnDelay) spawnDefenseEnemy(now);
+        else if (hasRoom && arcadeEnemies.length < enemyLimit && now - arcadeLastSpawn >= spawnDelay) spawnDefenseEnemy(now);
         if (!arcadePowerPickup && now >= nextPowerSpawn) spawnDefensePower(now);
         if (arcadePowerPickup) {
             arcadePowerPickup.y += 18 * delta;
@@ -9894,7 +9900,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=38", { updateViaCache: "none" })
+                .register("./sw.js?v=39", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
