@@ -50,8 +50,9 @@
     achievementHelp.textContent='Achievements · Tap a badge for details';
     document.getElementById('rewardBadges').before(achievementHelp);
     const dailyPanel=document.createElement('section');dailyPanel.className='daily-panel';dailyPanel.setAttribute('aria-label','Daily challenges');
-    dailyPanel.innerHTML='<h3>Daily Challenges</h3><p id="dailyReset" class="reward-rules"></p><div id="dailyTasks"></div><details class="daily-rules"><summary>Challenge rules</summary><p>Tap a challenge for its goal. Only qualifying rounds finished today count (at least 3 seconds with successful typing). Rewards are credited automatically once per challenge. No reward multiplier affects these payouts. Guest progress lasts for this session only.</p></details>';
+    dailyPanel.innerHTML='<div class="challenge-heading"><h3>Daily Challenges</h3><button type="button" id="dailyReroll">↻ REROLL</button></div><p id="dailyReset" class="reward-rules"></p><div id="dailyTasks"></div><div class="weekly-challenge" id="weeklyChallenge"></div><details class="daily-rules"><summary>Challenge rules</summary><p>Tap a challenge for its goal. Only qualifying rounds finished today count. One unfinished focus challenge can be rerolled daily. Weekly rewards reset Monday. Guest progress lasts for this session only.</p></details>';
     document.getElementById('rewardBadges').after(dailyPanel);
+    document.getElementById('dailyReroll').onclick=()=>{const before=state.daily&&state.daily.rerolls;const next=engine.rerollDaily(state);if((next.daily&&next.daily.rerolls)!==before){commit(next);render();notify('Daily focus challenge rerolled.');}else notify('Daily reroll already used or the challenge is complete.');};
     let selectedBadge = null;
     const badgeDetails=document.createElement('section');badgeDetails.id='badgeDetails';badgeDetails.className='badge-details';badgeDetails.hidden=true;badgeDetails.setAttribute('aria-label','Achievement details');
     document.getElementById('rewardBadges').after(badgeDetails);
@@ -242,6 +243,9 @@
             const label=document.createElement('small');label.textContent=task.xp+' XP + '+task.coins+' coins'+(task.claimed?' · Awarded':'');
             summary.append(name,count,progress,label);card.append(summary,desc);container.appendChild(card);
         });
+        const reroll=document.getElementById('dailyReroll');reroll.disabled=!!view.state.rerolls||view.state.claimed.includes('focus');
+        const weekly=engine.weeklyView(state),week=document.getElementById('weeklyChallenge');
+        week.innerHTML='<div><strong>WEEKLY · '+weekly.name+'</strong><span>'+weekly.rounds+'/15 rounds · '+weekly.modes+'/5 modes</span></div><progress max="20" value="'+(weekly.rounds+weekly.modes)+'" aria-label="Weekly challenge progress"></progress><small>'+(weekly.claimed?'✓ 150 XP + 100 coins awarded':'150 XP + 100 coins')+'</small>';
     }
     let dayTimer;
     function watchDay() {
@@ -252,11 +256,13 @@
     function award(event) {
         try {
             const result = engine.award(state, event);
+            if(window.KWInsights) window.KWInsights.record(event,result);
             if (!result.xp) return;
             commit(result.state);
             render();
             const names = engine.badges.flatMap(b => b.tiers?b.tiers.filter(t=>result.badges.includes(t.id)).map(t=>b.name+' '+t.name):result.badges.includes(b.id)?[b.name]:[]);
             if(result.dailyCompleted?.length) names.push('Daily: '+result.dailyCompleted.join(', '));
+            if(result.weeklyCompleted) names.push('Weekly challenge complete!');
             notify('+' + result.xp + ' XP · +' + result.coins + ' Key Coins' + (result.personalBest ? ' · Personal best!' : '') + (names.length ? ' · ' + names.join(', ') : ''));
         } catch(error) { notify('Rewards could not be saved. Check available device storage.'); }
     }

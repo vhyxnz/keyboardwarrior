@@ -36,7 +36,7 @@
     badges.find(b=>b.id==='survivor').name='Survival Warrior';
     badges.find(b=>b.id==='combo').name='Combo Master';
     const badgeIds = badges.flatMap(b=>b.tiers?b.tiers.map(t=>t.id):[b.id]);
-    const fresh = () => ({version:2,xp:0,coins:0,rounds:0,owned:[],equipped:{},badges:[],achievementProgress:{},best:{},claims:[],daily:null});
+    const fresh = () => ({version:3,xp:0,coins:0,rounds:0,owned:[],equipped:{},badges:[],achievementProgress:{},best:{},claims:[],daily:null,weekly:null});
     function badgeView(state,badge) {
         const value=badge.id==='veteran'?state.rounds:(state.achievementProgress[badge.id]||0);
         const levels=(badge.tiers||[]).map(t=>({...t,earned:state.badges.includes(t.id)}));
@@ -48,10 +48,11 @@
         if (!raw || !/^\d{4}-\d{2}-\d{2}$/.test(raw.day)) return null;
         const date = new Date(raw.day+'T00:00:00Z');
         if (!Number.isFinite(date.getTime()) || date.toISOString().slice(0,10)!==raw.day) return null;
-        const d = {day:raw.day, rounds:0, modes:[], defense:0, survival:0, ghostrace:0, treasure:0, combo:0, claimed:[]};
+        const d = {day:raw.day, rounds:0, modes:[], defense:0, survival:0, ghostrace:0, treasure:0, combo:0, claimed:[],rerolls:0,focusOffset:0};
         ['rounds','defense','survival','ghostrace','treasure','combo'].forEach(k=>d[k]=Number.isFinite(raw[k]) && raw[k]>=0 ? Math.min(1000000,raw[k]) : 0);
         d.modes = dailyModes.filter(m=>Array.isArray(raw.modes) && raw.modes.includes(m));
         d.claimed = ['rounds','variety','focus'].filter(id=>Array.isArray(raw.claimed) && raw.claimed.includes(id));
+        d.rerolls=Math.min(1,count(raw.rerolls));d.focusOffset=Math.min(4,count(raw.focusOffset));
         return d;
     }
     function dailyView(raw, day = dayKey()) {
@@ -67,13 +68,21 @@
             {name:'Find Your Flow',description:'Reach a 20-word Combo Mode streak, then finish the round.',field:'combo',target:20}
         ];
         const index = Math.floor(Date.parse(d.day+'T00:00:00Z') / 86400000);
-        const focus = focuses[((index % focuses.length)+focuses.length)%focuses.length] || focuses[0];
+        const focus = focuses[((index+d.focusOffset)%focuses.length+focuses.length)%focuses.length] || focuses[0];
         return {state:d, tasks:[
             {id:'rounds',name:'Daily Warm-up',description:'Complete 3 qualifying rounds in any modes.',target:3,value:d.rounds,xp:25,coins:20},
             {id:'variety',name:'Mix It Up',description:'Complete qualifying rounds in 2 different modes.',target:2,value:d.modes.length,xp:25,coins:25},
             {...focus,id:'focus',value:d[focus.field],xp:35,coins:30}
         ].map(t=>({...t,value:Math.min(t.target,t.value),claimed:d.claimed.includes(t.id)}))};
     }
+    function rerollDaily(raw,day=dayKey()){
+        const state=normalize(raw),view=dailyView(state,day),d=view.state;
+        if(d.rerolls||d.claimed.includes('focus'))return state;
+        d.rerolls=1;d.focusOffset=(d.focusOffset+1)%5;state.daily=d;return state;
+    }
+    function weekKey(day=dayKey()){const d=new Date(day+'T00:00:00Z'),n=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()-n+1);return d.toISOString().slice(0,10);}
+    function cleanWeekly(raw,key=weekKey()){if(!raw||raw.week!==key)return{week:key,rounds:0,modes:[],claimed:false};return{week:key,rounds:count(raw.rounds),modes:dailyModes.filter(m=>Array.isArray(raw.modes)&&raw.modes.includes(m)),claimed:!!raw.claimed};}
+    function weeklyView(raw,day=dayKey()){const w=cleanWeekly(raw.weekly,weekKey(day));return{state:w,name:'Versatile Warrior',description:'Complete 15 qualifying rounds across at least 5 modes this week.',rounds:Math.min(15,w.rounds),modes:Math.min(5,w.modes.length),complete:w.rounds>=15&&w.modes.length>=5,claimed:w.claimed,xp:150,coins:100};}
     function awardDaily(state, event) {
         if (!event.day || !/^\d{4}-\d{2}-\d{2}$/.test(event.day)) return {xp:0,coins:0,names:[]};
         const view = dailyView(state,event.day), d=view.state;
@@ -95,6 +104,7 @@
         const s = fresh();
         if (!raw || typeof raw !== 'object') return s;
         s.daily = cleanDaily(raw.daily);
+        s.weekly = raw.weekly ? cleanWeekly(raw.weekly) : null;
         ['xp','coins','rounds'].forEach(k => { s[k] = count(raw[k]); });
         s.owned = catalog.filter(i => Array.isArray(raw.owned) && raw.owned.includes(i.id)).map(i => i.id);
         s.badges = badgeIds.filter(id => Array.isArray(raw.badges) && raw.badges.includes(id));
@@ -138,9 +148,11 @@
         coins += unlocked.length * 20;
         const daily = awardDaily(state,event);
         xp += daily.xp; coins += daily.coins;
+        const weekly=weeklyView(state,event.day),w=weekly.state;state.weekly=w;w.rounds++;if(dailyModes.includes(event.mode)&&!w.modes.includes(event.mode))w.modes.push(event.mode);
+        const weeklyDone=w.rounds>=15&&w.modes.length>=5&&!w.claimed;if(weeklyDone){w.claimed=true;xp+=150;coins+=100;}
         state.xp += xp;
         state.coins += coins;
-        return {state, xp, coins, badges:unlocked, personalBest, dailyCompleted:daily.names};
+        return {state, xp, coins, badges:unlocked, personalBest, dailyCompleted:daily.names, weeklyCompleted:weeklyDone};
     }
     function purchase(raw, id) {
         const state = normalize(raw), item = catalog.find(i => i.id === id);
@@ -157,5 +169,5 @@
         state.equipped[item.category] = id;
         return state;
     }
-    root.RewardEngine = {catalog,badges,badgeView,fresh,normalize,award,purchase,equip,dayKey,dailyView};
+    root.RewardEngine = {catalog,badges,badgeView,fresh,normalize,award,purchase,equip,dayKey,dailyView,rerollDaily,weeklyView};
 })(globalThis);
