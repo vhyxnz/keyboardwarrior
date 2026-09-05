@@ -9439,8 +9439,8 @@
         roundRect(ctx, 760, 245, 210, 150, 26);
         ctx.fill();
         ctx.textAlign = "center";
-        label("AVG SCORE", 865, 284);
-        value(Math.round(getAverageAccuracy()) + "%", 865, 345, 52, white);
+        label("AVG RANKED SCORE", 865, 284);
+        value((rankedRoundsPlayed ? Math.round(getAverageRankScore()) + "%" : "—"), 865, 345, 52, white);
         ctx.textAlign = "left";
 
         ctx.fillStyle = muted;
@@ -9929,7 +9929,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=49", { updateViaCache: "none" })
+                .register("./sw.js?v=50", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
