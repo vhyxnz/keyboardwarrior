@@ -1,7 +1,7 @@
 {
   "id": "./",
   "name": "Keyboard Warrior",
-  "short_name": "KW Warrior",
+  "short_name": "Keyboard Warrior",
   "description": "Build typing speed, accuracy, and attitude in Keyboard Warrior.",
   "start_url": "./index.html?v=1",
   "scope": "./",
