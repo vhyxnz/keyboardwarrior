@@ -2545,6 +2545,7 @@
 <link rel="stylesheet" href="practice-lab.css">
 <link rel="stylesheet" href="final-upgrades.css">
 <link rel="stylesheet" href="banner-highlights.css">
+<link rel="stylesheet" href="arcade-mobile.css">
 </head>
 
 <body class="profile-select">
@@ -6270,18 +6271,24 @@
         el.type = "button";
         el.className = "power-pickup";
         el.setAttribute("aria-label", "Activate " + power.word + ": " + power.label);
-        // Prevent pointer focus from leaving the typing field (and dismissing its keyboard).
-        el.addEventListener("pointerdown", function(event) { event.preventDefault(); });
+        function triggerPower() {
+            if (!arcadeActive || arcadeLastMode !== "defense" || !arcadePowerPickup || arcadePowerPickup.el !== el) return;
+            const input = document.getElementById("arcadeInput");
+            const start = input.selectionStart, end = input.selectionEnd;
+            activateDefensePower();
+            // Keep the current input and selection untouched. Refocusing here
+            // causes Android to pan the visual viewport a second time.
+            if (document.activeElement === input && start !== null && end !== null) input.setSelectionRange(start, end);
+        }
+        el.addEventListener("pointerdown", function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            if (event.pointerType === "touch" || event.pointerType === "pen") triggerPower();
+        });
         el.addEventListener("click", function(event) {
             event.preventDefault();
             event.stopPropagation();
-            if (!arcadeActive || arcadeLastMode !== "defense" || !arcadePowerPickup || arcadePowerPickup.el !== el) return;
-            const input = document.getElementById("arcadeInput");
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            activateDefensePower();
-            if (document.activeElement !== input) input.focus({ preventScroll: true });
-            if (start !== null && end !== null) input.setSelectionRange(start, end);
+            triggerPower();
         });
         const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         icon.setAttribute("class", "power-icon");
@@ -6372,6 +6379,9 @@
         if (arcadePaused) { arcadeLastFrame=now; arcadeLastSpawn=now; arcadeFrame=requestAnimationFrame(defenseFrame); return; }
         const delta = Math.min(50, now - arcadeLastFrame) / 1000;
         arcadeLastFrame = now;
+        const defenseArena=document.getElementById("arcadeArena");
+        const defenseFloor=Math.max(110,defenseArena.clientHeight-50);
+        const boardScale=Math.max(.45,Math.min(1,defenseArena.clientHeight/390));
         const spawnDelay = Math.max(1200, 3200 - arcadeScoreValue * 20);
         const minimumGap = arcadeScoreValue < 20 ? 90 : 70;
         const hasRoom = arcadeEnemies.every(function(enemy) { return enemy.y >= -42 + minimumGap; });
@@ -6382,9 +6392,9 @@
         else if (hasRoom && arcadeEnemies.length < enemyLimit && now - arcadeLastSpawn >= spawnDelay) spawnDefenseEnemy(now);
         if (!arcadePowerPickup && now >= nextPowerSpawn) spawnDefensePower(now);
         if (arcadePowerPickup) {
-            arcadePowerPickup.y += 18 * delta;
+            arcadePowerPickup.y += 18 * delta * boardScale;
             arcadePowerPickup.el.style.top = arcadePowerPickup.y + "px";
-            if (arcadePowerPickup.y >= 340) {
+            if (arcadePowerPickup.y >= defenseFloor) {
                 arcadePowerPickup.el.remove();
                 arcadePowerPickup = null;
                 nextPowerSpawn = now + 5000;
@@ -6394,10 +6404,10 @@
             : recovering ? .12 + .88 * (now - defenseFreezeUntil) / 2000 : 1;
         document.getElementById("arcadeArena").classList.toggle("power-frozen", recovering);
         arcadeEnemies.slice().forEach(function(enemy) {
-            enemy.y += enemy.speed * delta * speedFactor;
+            enemy.y += enemy.speed * delta * speedFactor * boardScale;
             enemy.el.style.top = enemy.y + "px";
-            enemy.el.classList.toggle("danger", enemy.y >= 270);
-            if (enemy.y >= 340) {
+            enemy.el.classList.toggle("danger", enemy.y >= defenseFloor-70);
+            if (enemy.y >= defenseFloor) {
                 const input = document.getElementById("arcadeInput");
                 const typed = input.value.trim().toLowerCase();
                 // Preserve typing aimed at another live target.
@@ -9925,11 +9935,12 @@
 <script src="practice-lab.js"></script>
 <script src="insights.js"></script>
 <script src="final-upgrades.js"></script>
+<script src="arcade-mobile.js"></script>
 <script>
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=50", { updateViaCache: "none" })
+                .register("./sw.js?v=52", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);

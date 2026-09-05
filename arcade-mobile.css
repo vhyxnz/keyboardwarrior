@@ -1,0 +1,22 @@
+@media(max-width:700px),(pointer:coarse){
+ body.game-active:has(#arcadeModeScreen.active){overflow:hidden;overscroll-behavior:none}
+ #arcadeModeScreen.active{position:fixed;z-index:120;left:0;right:0;top:var(--arcade-visible-top,0);display:block;height:var(--arcade-visible-height,100dvh);min-height:0;box-sizing:border-box;overflow:hidden;padding:max(6px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left));background:var(--bg);overscroll-behavior:none}
+ #arcadeModeScreen .arcade-shell{display:grid;grid-template-rows:auto auto auto auto minmax(180px,1fr) auto auto;gap:6px;width:100%;height:100%;min-height:0;margin:0 auto}
+ #arcadeModeScreen .page-title{font-size:clamp(22px,7vw,30px);line-height:1.05;margin:0}
+ #arcadeModeScreen .page-subtitle{margin:0;font-size:11px;line-height:1.25}
+ #arcadeModeScreen .power-info{margin:0;font-size:10px;line-height:1.2}
+ #arcadeModeScreen .power-info p{margin:5px 0}
+ #arcadeModeScreen .arcade-hud{gap:5px;margin:0}
+ #arcadeModeScreen .arcade-hud-item{padding:5px 4px;border-radius:9px}
+ #arcadeModeScreen .arcade-hud-item strong{font-size:17px;line-height:1.05}
+ #arcadeModeScreen .arcade-arena{height:auto;min-height:180px;border-radius:14px}
+ #arcadeModeScreen .arcade-input-row{margin:0;gap:6px}
+ #arcadeModeScreen .arcade-input,#arcadeModeScreen .arcade-clear{min-height:44px;height:44px;font-size:16px}
+ #arcadeModeScreen .arcade-clear{min-width:62px;padding:6px}
+ #arcadeModeScreen .arcade-actions{margin:0;gap:6px}
+ #arcadeModeScreen .arcade-actions .action-btn{min-height:38px;padding:7px;font-size:11px}
+ #arcadeModeScreen .power-pickup{touch-action:none;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+ html.arcade-keyboard-open #arcadeModeScreen .page-title,html.arcade-keyboard-open #arcadeModeScreen .page-subtitle,html.arcade-keyboard-open #arcadeModeScreen .power-info{display:none}
+ html.arcade-keyboard-open #arcadeModeScreen .arcade-shell{grid-template-rows:auto minmax(130px,1fr) auto auto;gap:4px}
+ html.arcade-keyboard-open #arcadeModeScreen .arcade-arena{min-height:130px}
+}
