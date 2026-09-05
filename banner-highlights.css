@@ -1,0 +1,7 @@
+.profile-card{padding-right:16px!important}
+#warriorBanner{position:relative}
+#warriorBanner .profile-showcase{top:13px;right:72px;transform:none;width:94px}
+#warriorBanner .profile-highlight-details{top:38px;right:0}
+#ghostReplaySameButton{margin-bottom:9px}
+.name-highlight-row{display:flex;align-items:center;gap:8px;min-width:0}.name-highlight-row .profile-name{min-width:0}.name-highlight-row .profile-showcase{position:relative;inset:auto;transform:none;flex:0 0 auto;width:auto}.name-highlight-row .badge-showcase-icons{max-width:62px}.name-highlight-row .profile-highlight-details{top:37px;right:0}
+@media(max-width:420px){.profile-card{padding-right:12px!important}#warriorBanner .profile-showcase{top:9px;right:62px;width:64px}}

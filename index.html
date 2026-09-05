@@ -2544,6 +2544,7 @@
 <link rel="stylesheet" href="quality-upgrades.css">
 <link rel="stylesheet" href="practice-lab.css">
 <link rel="stylesheet" href="final-upgrades.css">
+<link rel="stylesheet" href="banner-highlights.css">
 </head>
 
 <body class="profile-select">
@@ -3362,6 +3363,7 @@
             <div class="page-title" id="arcadeResultTitle">Keyboard Defense</div>
             <div class="arcade-result-score" id="arcadeResultScore">0</div>
             <p class="page-subtitle" id="arcadeResultDetails"></p>
+            <button type="button" class="action-btn" id="ghostReplaySameButton" hidden onclick="replaySameGhostPhrase()">REPLAY SAME PHRASE</button>
             <button type="button" class="action-btn" onclick="restartArcadeMode()">PLAY AGAIN</button>
             <button type="button" class="action-btn secondary-btn" style="margin-top:9px;" onclick="showModeScreen()">CHANGE MODES</button>
         </div>
@@ -4970,11 +4972,7 @@
 
         showScreen("gameScreen");
 
-        setTimeout(function() {
-            document
-                .getElementById("typingInput")
-                .focus();
-        },100);
+        setTimeout(function(){document.getElementById("typingInput").focus();},100);
 
     }
 
@@ -5802,29 +5800,14 @@
         showScreen("mirrorMatchScreen");
 
         const countdown = document.getElementById("mirrorCountdown");
-        if (countdown) countdown.classList.remove("hidden");
-        let count = 3;
-        function tick() {
-            if (!document.getElementById("mirrorMatchScreen").classList.contains("active")) return;
-            if (count > 0) {
-                if (countdown) countdown.textContent = count;
-                count--;
-                mirrorCountdownTimeout = setTimeout(tick, 700);
-                return;
-            }
-            if (countdown) countdown.textContent = "GO!";
-            mirrorMatchStartTime = Date.now();
-            [1, 2].forEach(function(player) {
-                const input = document.getElementById("mirrorInput" + player);
-                const status = document.getElementById("mirrorPlayer" + player + "Status");
-                if (input) input.disabled = false;
-                if (status) status.textContent = "RACING";
-            });
-            mirrorCountdownTimeout = setTimeout(function() {
-                if (countdown) countdown.classList.add("hidden");
-            }, 400);
-        }
-        tick();
+        if (countdown) countdown.classList.add("hidden");
+        mirrorMatchStartTime = Date.now();
+        [1, 2].forEach(function(player) {
+            const input = document.getElementById("mirrorInput" + player);
+            const status = document.getElementById("mirrorPlayer" + player + "Status");
+            if (input) input.disabled = false;
+            if (status) status.textContent = "RACING";
+        });
     }
 
     function updateMirrorPlayer(player) {
@@ -6200,6 +6183,14 @@
         startGhostRace();
     }
 
+    function replaySameGhostPhrase() {
+        const phrase=lastGhostPhrase||currentPhrase;
+        const choice=getGhostLibrary().find(function(item){return item.phrase===phrase;})||{phrase:phrase,duration:0,times:[]};
+        document.body.className="game-active";
+        showScreen("ghostRaceScreen");
+        beginGhostRace(choice);
+    }
+
     function finishGhostRace() {
         const duration = Math.max(1, Date.now() - ghostStartTime);
         const beatGhost = activeGhostReplay && duration < activeGhostReplay.duration;
@@ -6497,7 +6488,9 @@
         updateArcadeHud();
         document.body.className = "game-active";
         showScreen("arcadeModeScreen");
-        setTimeout(function() { input.focus(); }, 100);
+        arcadePaused=true;
+        if(window.KWFinal)window.KWFinal.countdown(input,function(){arcadePaused=false;arcadeLastFrame=performance.now();arcadeLastSpawn=performance.now();if(mode==='survival')nextSurvivalWord();input.focus();});
+        else {arcadePaused=false;setTimeout(function() { input.focus(); }, 100);}
     }
 
     function handleArcadeInput() {
@@ -6595,6 +6588,7 @@
         document.getElementById("arcadeResultTitle").textContent = title;
         document.getElementById("arcadeResultScore").textContent = score;
         document.getElementById("arcadeResultDetails").textContent = details;
+        document.getElementById("ghostReplaySameButton").hidden = title !== "Ghost Race";
         document.body.className = "result-active";
         showScreen("arcadeResultScreen");
     }
@@ -9791,6 +9785,9 @@
             return;
         }
 
+        startGame();
+        return;
+
         // Always switch to the game screen immediately.
         document.body.className = "game-active";
         showScreen("gameScreen");
@@ -9932,7 +9929,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=46", { updateViaCache: "none" })
+                .register("./sw.js?v=49", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
