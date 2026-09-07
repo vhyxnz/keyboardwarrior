@@ -6561,6 +6561,7 @@
         document.getElementById("arcadeBase").textContent = "KEYBOARD BASE";
         document.getElementById("arcadeModeTitle").textContent = title;
         document.getElementById("arcadeModeSubtitle").textContent = subtitle;
+        document.getElementById("arcadeModeScreen").dataset.arcadeMode = mode;
         const powerInfo = document.getElementById("defensePowerInfo");
         powerInfo.hidden = mode !== "defense";
         powerInfo.open = false;
@@ -10021,7 +10022,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=62", { updateViaCache: "none" })
+                .register("./sw.js?v=63", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
