@@ -10021,11 +10021,16 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=60", { updateViaCache: "none" })
+                .register("./sw.js?v=61", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
                 });
+        });
+        navigator.serviceWorker.addEventListener("controllerchange", function() {
+            if (sessionStorage.getItem("kw_sw_reloaded") === "1") return;
+            sessionStorage.setItem("kw_sw_reloaded", "1");
+            window.location.reload();
         });
     }
 </script>

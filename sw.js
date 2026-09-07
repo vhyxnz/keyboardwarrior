@@ -1,8 +1,8 @@
-const CACHE_NAME = "keyboard-warrior-pwa-v60";
+const CACHE_NAME = "keyboard-warrior-pwa-v61";
 const APP_SHELL = [
     "./",
     "./index.html",
-    "./index.html?v=60",
+    "./index.html?v=61",
     "./arcade-mobile.js",
     "./arcade-mobile.css",
     "./quality-upgrades.js",
@@ -40,7 +40,12 @@ const APP_SHELL = [
 
 self.addEventListener("install", event => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
+        caches.open(CACHE_NAME).then(cache => Promise.all(APP_SHELL.map(url =>
+            fetch(new Request(url, { cache:"reload" })).then(response => {
+                if (!response.ok) throw new Error("Could not cache " + url);
+                return cache.put(url, response);
+            })
+        )))
     );
     self.skipWaiting();
 });
@@ -60,9 +65,7 @@ self.addEventListener("fetch", event => {
     if (event.request.method !== "GET") return;
 
     event.respondWith(
-        fetch(event.request, {
-            cache: event.request.mode === "navigate" ? "no-store" : "default"
-        })
+        fetch(event.request, { cache:"no-store" })
             .then(response => {
                 const copy = response.clone();
                 caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy));
