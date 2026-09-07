@@ -10021,7 +10021,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=61", { updateViaCache: "none" })
+                .register("./sw.js?v=62", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
