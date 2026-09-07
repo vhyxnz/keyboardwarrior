@@ -4,10 +4,11 @@
     const title=screen.querySelector('.page-title'), subtitle=screen.querySelector('.page-subtitle');
     const hero=document.createElement('header');hero.className='chaos-hero';title.before(hero);
     const label=document.createElement('div');label.className='chaos-eyebrow';label.textContent='THE UNSTABLE SIDE OF TYPING';
-    hero.append(label,title,subtitle);subtitle.textContent='Four modes. Zero chill. Pick your kind of trouble.';
+    hero.append(label,title,subtitle);subtitle.textContent='Five modes. Zero chill. Pick your kind of trouble.';
     const sticker=document.createElement('span');sticker.className='chaos-sticker';sticker.textContent='!@#$';sticker.setAttribute('aria-hidden','true');hero.appendChild(sticker);
     const designs=[
         {key:'curse',name:'Curse Mode',tag:'SOLO · STACKING CURSES',slogan:'Your backspace called. It quit.',path:'<path d="M28 51V36a22 22 0 0 1 44 0v32l-11-6-11 8-11-8-11 6z"/><path d="m36 35 8 5-8 5m28-10-8 5 8 5M43 54h14M18 14l-6 10h10l-5 10m64 17-6 10h10l-5 10"/>'},
+        {key:'trash',name:'Ego Breaker',tag:'SOLO · LEVEL 5 OR 600 COINS',slogan:'The better you type, the angrier it gets.',path:'<path d="M18 18h64v44H49L34 75V62H18z"/><path d="M31 34h38M31 45h27M75 10l8-7m2 18 10-2M14 11 6 4"/>'},
         {key:'roast',name:'Roast Battle',tag:'2 PLAYERS · PASS & PLAY',slogan:'Bring a friend. Leave with a roast.',path:'<path d="M31 65c-21-22 0-37 7-48 0 18 17 15 12 31 13-5 13-19 13-19 23 28 8 46-11 47-10 0-16-3-21-11z"/><path d="M40 64c-6-9 4-16 6-21 1 9 13 11 10 21M12 33l-5-6m69-11 6-7m-4 62 8 3"/>'},
         {key:'mirror',name:'Mirror Match',tag:'2 PLAYERS · LIVE RACE',slogan:'One screen. Two egos. One winner.',path:'<path d="M12 17h29v53H12zm47 0h29v53H59zM47 9h6v72"/><path d="m19 31 15-7m-15 21 15-7m32-7 15-7m-15 21 15-7M22 59h9m38 0h9"/>'},
         {key:'treasure',name:'Cursed Treasure',tag:'SOLO · RISK & REWARD',slogan:'More treasure. Worse decisions.',path:'<path d="M17 39V28c0-10 66-10 66 0v11M17 39h66v36H17zM34 22v17m32-17v17M17 52h24m18 0h24M41 45h18v19H41z"/><path d="m51 5 3 7 7 3-7 3-3 7-3-7-7-3 7-3M8 52l-4 5m85-30 6-3"/>'}

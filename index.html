@@ -2540,7 +2540,9 @@
 
     </style>
 <link rel="stylesheet" href="rewards.css">
+<link rel="stylesheet" href="word-packs.css">
 <link rel="stylesheet" href="chaos-view.css">
+<link rel="stylesheet" href="trash-talk.css">
 <link rel="stylesheet" href="quality-upgrades.css">
 <link rel="stylesheet" href="practice-lab.css">
 <link rel="stylesheet" href="final-upgrades.css">
@@ -2687,7 +2689,6 @@
             </div>
 
         </div>
-
 
         <div class="mode-card">
 
@@ -2890,6 +2891,12 @@
                 START CURSED ROUND
             </button>
 
+        </div>
+
+        <div class="mode-card" id="trashTalkModeCard">
+            <h2>Ego Breaker</h2>
+            <p>Type through increasingly hostile rounds, turn every roast into a comeback, and face the game itself every tenth round.</p>
+            <button type="button" class="action-btn" id="trashTalkStartButton" onclick="openTrashTalkMode()">CHECK UNLOCK</button>
         </div>
 
         <div class="mode-card">
@@ -3339,15 +3346,29 @@
             <p class="page-subtitle" id="arcadeModeSubtitle"></p>
             <details class="power-info" id="defensePowerInfo" hidden>
                 <summary><span aria-hidden="true">i</span>Power-ups</summary>
-                <p>Gold power-ups are optional. Click or tap one as it falls to activate it without interrupting your typing. Letting it pass the base never costs a life.</p>
+                <p><strong>Consumables</strong> are bought in the Warrior Shop and remain in your inventory until used. Ice, Boom, and Repair appear above the arena. Gold falling pickups are free and never use inventory.</p>
+                <p><strong>Revive:</strong> Offered only after your last life is lost. Use one to continue with 1 life, or end the run and save it for later.</p>
                 <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-freeze"/></svg><strong>Ice:</strong> Slows enemies for 5 seconds, then gradually restores their speed over 2 seconds. New enemies pause during this recovery.</p>
                 <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-nova"/></svg><strong>Boom:</strong> Clears all visible enemies and awards their points.</p>
                 <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-repair"/></svg><strong>Repair:</strong> Restores one life, or gives 3 bonus points if your base is already full.</p>
+            </details>
+            <details class="power-info" id="survivalPowerInfo" hidden>
+                <summary><span aria-hidden="true">i</span>Survival consumables</summary>
+                <p>These are purchased in the Warrior Shop and consumed when tapped.</p>
+                <p><strong>Slow:</strong> Adds 50% of the word's original time limit to the current countdown.</p>
+                <p><strong>Skip:</strong> Replaces the current word without awarding a point or costing a life.</p>
             </details>
             <div class="arcade-hud">
                 <div class="arcade-hud-item"><strong id="arcadeScore">0</strong><span>SCORE</span></div>
                 <div class="arcade-hud-item"><strong id="arcadeLives">♥♥♥</strong><span>LIVES</span></div>
                 <div class="arcade-hud-item"><strong id="arcadeLevel">1</strong><span>LEVEL</span></div>
+            </div>
+            <div class="consumable-bar" id="defenseConsumables" hidden aria-label="Consumable power-ups">
+                <button type="button" data-power="freeze" data-modes="defense" onclick="useDefenseConsumable('freeze')" title="Ice: slow all enemies for 5 seconds" aria-label="Use Ice"><span aria-hidden="true">❄</span><small>0</small></button>
+                <button type="button" data-power="nova" data-modes="defense" onclick="useDefenseConsumable('nova')" title="Boom: destroy all visible enemies" aria-label="Use Boom"><span aria-hidden="true">✦</span><small>0</small></button>
+                <button type="button" data-power="repair" data-modes="defense" onclick="useDefenseConsumable('repair')" title="Repair: restore 1 life or gain 3 points" aria-label="Use Repair"><span aria-hidden="true">+</span><small>0</small></button>
+                <button type="button" data-power="slow" data-modes="survival" onclick="useSurvivalConsumable('slow')" title="Slow: add 50% more time" aria-label="Use Slow"><span aria-hidden="true">◷</span><small>0</small></button>
+                <button type="button" data-power="skip" data-modes="survival" onclick="useSurvivalConsumable('skip')" title="Skip: replace this word" aria-label="Use Skip"><span aria-hidden="true">↠</span><small>0</small></button>
             </div>
             <div class="arcade-arena" id="arcadeArena"><div class="arcade-grid"></div><div class="arcade-base" id="arcadeBase">KEYBOARD BASE</div></div>
             <div class="arcade-input-row">
@@ -3711,6 +3732,11 @@
     <h2 id="defenseIntroTitle">Keyboard Defense</h2>
     <p>Protect your base by typing the falling enemy words. A matching word is destroyed automatically—no Enter key needed. You can use Backspace to correct mistakes.</p>
     <p>You start with <strong>5 lives</strong>. Each enemy reaching the base costs one life. Every 10 points raises your level, making enemies faster and more frequent.</p>
+    <h3>Shop consumables</h3>
+    <p><strong>Revive:</strong> Offered after you lose your last life. Continue with 1 life or keep it and end the run.</p>
+    <p><strong>Ice:</strong> Use an owned charge above the arena to slow every enemy for 5 seconds.</p>
+    <p><strong>Boom:</strong> Use an owned charge to destroy every visible enemy and collect their points.</p>
+    <p><strong>Repair:</strong> Use an owned charge to restore 1 life, or gain 3 points when already at full health.</p>
     <h3>Optional gold power-ups</h3>
     <p>Click or tap a gold power-up before it reaches the base. Your typed text stays intact. Ignoring a power-up has <strong>no penalty</strong>.</p>
     <p><svg class="power-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#power-icon-freeze"/></svg><strong>Ice:</strong> Slows enemies for 5 seconds, then restores speed gradually over 2 seconds. New enemies pause throughout.</p>
@@ -5970,11 +5996,12 @@
             }
         };
         const languagePools = arcadeWordPools[language] || arcadeWordPools.english;
-        return languagePools[attitude] || languagePools.friendly;
+        const classic = languagePools[attitude] || languagePools.friendly;
+        return window.KWWordPacks ? KWWordPacks.words(classic) : classic;
     }
 
     function getNextArcadeWord() {
-        const deckIdentity = language + ":" + attitude;
+        const deckIdentity = language + ":" + attitude + ":" + (window.KWWordPacks ? KWWordPacks.key() : "classic");
         if (arcadeDeckLanguage !== deckIdentity || !arcadeWordDeck.length) {
             arcadeDeckLanguage = deckIdentity;
             arcadeWordDeck = getArcadeWords().slice();
@@ -5999,7 +6026,52 @@
         document.getElementById("arcadeScore").textContent = arcadeScoreValue;
         document.getElementById("arcadeLives").textContent = arcadeLivesValue > 0 ? "♥".repeat(arcadeLivesValue) : "0";
         document.getElementById("arcadeLevel").textContent = level;
+        if (window.refreshDefenseConsumables) refreshDefenseConsumables();
     }
+
+    function useDefenseConsumable(type) {
+        if (!arcadeActive || arcadeLastMode !== "defense" || !window.WarriorRewards || !WarriorRewards.inventory(type)) return;
+        if ((type === "revive" || type === "repair") && arcadeLivesValue >= 5) { showPowerBanner("BASE ALREADY FULL"); return; }
+        if (!WarriorRewards.consumePower(type)) return;
+        const arena=document.getElementById("arcadeArena");
+        if(type==="freeze"){defenseFreezeUntil=performance.now()+5000;arena.classList.add("power-frozen");showPowerBanner("ICE • 5 SECONDS");}
+        else if(type==="nova"){const targets=arcadeEnemies.slice();targets.forEach(enemy=>{showDefenseHitEffect(enemy);enemy.el.remove();});arcadeEnemies=[];arcadeScoreValue+=targets.length;showPowerBanner("BOOM • "+targets.length+" DESTROYED");}
+        else {arcadeLivesValue=Math.min(5,arcadeLivesValue+1);showPowerBanner((type==="revive"?"REVIVE":"REPAIR")+" • +1 LIFE");}
+        updateArcadeHud();document.getElementById("arcadeInput").focus({preventScroll:true});
+    }
+
+    function offerDefenseRevive() {
+        if (arcadeLastMode !== "defense" || !window.WarriorRewards || !WarriorRewards.inventory("revive")) { finishArcadeRun(); return; }
+        arcadePaused = true;
+        let dialog = document.getElementById("defenseReviveDialog");
+        if (!dialog) {
+            dialog = document.createElement("dialog"); dialog.id = "defenseReviveDialog"; dialog.className = "defense-intro";
+            dialog.innerHTML = '<h2>BASE DESTROYED</h2><p>You own <strong id="reviveOwnedCount">0 Revives</strong>. Use one to continue this run with 1 life?</p><button type="button" class="action-btn" id="confirmDefenseRevive">USE REVIVE</button><button type="button" class="action-btn secondary-btn" id="declineDefenseRevive">END RUN</button>';
+            document.body.appendChild(dialog);
+            dialog.querySelector("#confirmDefenseRevive").onclick = function() { if (!WarriorRewards.consumePower("revive")) { dialog.close(); arcadePaused=false; finishArcadeRun(); return; } arcadeEnemies.forEach(function(enemy){if(enemy.el)enemy.el.remove();}); arcadeEnemies=[]; arcadeLivesValue=1; arcadePaused=false; arcadeLastFrame=performance.now(); arcadeLastSpawn=performance.now(); updateArcadeHud(); dialog.close(); showPowerBanner("REVIVE • CONTINUE WITH 1 LIFE"); document.getElementById("arcadeInput").focus({preventScroll:true}); };
+            dialog.querySelector("#declineDefenseRevive").onclick = function() { dialog.close(); arcadePaused=false; finishArcadeRun(); };
+            dialog.addEventListener("cancel", function(event) { event.preventDefault(); dialog.querySelector("#declineDefenseRevive").click(); });
+        }
+        const count=WarriorRewards.inventory("revive"); dialog.querySelector("#reviveOwnedCount").textContent=count+" Revive"+(count===1?"":"s");
+        if (!dialog.open) dialog.showModal();
+    }
+
+    function useSurvivalConsumable(type) {
+        if (!arcadeActive || arcadeLastMode !== "survival" || !window.WarriorRewards || !WarriorRewards.inventory(type)) return;
+        if (!WarriorRewards.consumePower(type)) return;
+        if (type === "slow") {
+            survivalDeadline += survivalWindow * .5;
+            survivalWindow *= 1.5;
+            showPowerBanner("SLOW • +50% TIME");
+        } else {
+            nextSurvivalWord();
+            showPowerBanner("SKIP • NEW WORD");
+        }
+        refreshDefenseConsumables();
+        document.getElementById("arcadeInput").focus({preventScroll:true});
+    }
+
+    window.refreshDefenseConsumables=function(){const bar=document.getElementById("defenseConsumables");if(!bar)return;bar.hidden=!(arcadeActive&&(arcadeLastMode==="defense"||arcadeLastMode==="survival"));bar.querySelectorAll("[data-power]").forEach(button=>{const relevant=button.dataset.modes===arcadeLastMode,n=window.WarriorRewards?WarriorRewards.inventory(button.dataset.power):0;button.hidden=!relevant;button.querySelector("small").textContent=n;button.disabled=!n;button.setAttribute("aria-label",button.title+". "+n+" owned");});};
 
     function clearArcadeRuntime() {
         arcadeActive = false;
@@ -6372,6 +6444,7 @@
         nextPowerSpawn = performance.now() + 8000 + Math.random() * 5000;
         arcadeLastFrame = performance.now();
         arcadeFrame = requestAnimationFrame(defenseFrame);
+        refreshDefenseConsumables();
     }
 
     function defenseFrame(now) {
@@ -6404,6 +6477,7 @@
             : recovering ? .12 + .88 * (now - defenseFreezeUntil) / 2000 : 1;
         document.getElementById("arcadeArena").classList.toggle("power-frozen", recovering);
         arcadeEnemies.slice().forEach(function(enemy) {
+            if (arcadePaused) return;
             enemy.y += enemy.speed * delta * speedFactor * boardScale;
             enemy.el.style.top = enemy.y + "px";
             enemy.el.classList.toggle("danger", enemy.y >= defenseFloor-70);
@@ -6420,7 +6494,7 @@
                 arcadeMisses++;
                 showDefenseDamageEffect();
                 updateArcadeHud();
-                if (arcadeLivesValue <= 0) finishArcadeRun();
+                if (arcadeLivesValue <= 0) offerDefenseRevive();
             }
         });
         if (arcadeActive) arcadeFrame = requestAnimationFrame(defenseFrame);
@@ -6489,6 +6563,9 @@
         const powerInfo = document.getElementById("defensePowerInfo");
         powerInfo.hidden = mode !== "defense";
         powerInfo.open = false;
+        const survivalPowerInfo = document.getElementById("survivalPowerInfo");
+        survivalPowerInfo.hidden = mode !== "survival";
+        survivalPowerInfo.open = false;
         if (window.KeyboardShortcuts) KeyboardShortcuts.render();
         const input = document.getElementById("arcadeInput");
         const pauseButton=document.getElementById("arcadePauseButton");
@@ -9928,7 +10005,9 @@
 <script src="cosmetics.js"></script>
 <script src="treasure.js"></script>
 <script src="chaos-view.js"></script>
+<script src="trash-talk.js"></script>
 <script src="rewards.js"></script>
+<script src="word-packs.js"></script>
 <script src="shortcuts.js"></script>
 <script src="profile-layout.js"></script>
 <script src="quality-upgrades.js"></script>
@@ -9940,7 +10019,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=52", { updateViaCache: "none" })
+                .register("./sw.js?v=59", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);

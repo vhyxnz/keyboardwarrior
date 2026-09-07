@@ -106,7 +106,7 @@
     dialog.id = 'cosmeticShop';
     dialog.className = 'cosmetic-shop';
     dialog.setAttribute('aria-labelledby', 'shopTitle');
-    dialog.innerHTML = '<div class="shop-heading"><div><h2 id="shopTitle">Warrior Shop</h2><p id="shopBalance"></p></div><button type="button" class="shop-close" aria-label="Close shop">×</button></div><p class="shop-help">Cosmetics only—no stat boosts or locked gameplay.</p><label class="shop-filter-label" for="shopCategory">Browse cosmetics</label><select id="shopCategory"><option value="all">All cosmetics</option><option value="frame">Avatar frames</option><option value="avatar">Collectible avatars</option><option value="card">Profile cards</option><option value="banner">Profile banners</option><option value="title">Profile titles</option><option value="hit">Defense hit effects</option><option value="trail">Defense trails</option><option value="base">Defense bases</option><option value="ghost">Ghost colors</option><option value="lane">Race lanes</option></select><p id="shopStatus" role="status"></p><div id="shopItems" class="shop-grid"></div>';
+    dialog.innerHTML = '<div class="shop-heading"><div><h2 id="shopTitle">Warrior Shop</h2><p id="shopBalance"></p></div><button type="button" class="shop-close" aria-label="Close shop">×</button></div><p class="shop-help">Collect cosmetics, word packages, and consumable power-ups.</p><label class="shop-filter-label" for="shopCategory">Browse shop</label><select id="shopCategory"><option value="all">Everything</option><option value="powerup">Consumable power-ups</option><option value="wordpack">Special word packages</option><option value="frame">Avatar frames</option><option value="avatar">Collectible avatars</option><option value="card">Profile cards</option><option value="banner">Profile banners</option><option value="title">Profile titles</option><option value="hit">Defense hit effects</option><option value="trail">Defense trails</option><option value="base">Defense bases</option><option value="ghost">Ghost colors</option><option value="lane">Race lanes</option></select><p id="shopStatus" role="status"></p><div id="shopItems" class="shop-grid"></div>';
     document.body.appendChild(dialog);
     dialog.querySelector('.shop-close').addEventListener('click', () => dialog.close());
     dialog.querySelector('#shopCategory').addEventListener('change', renderShop);
@@ -127,6 +127,15 @@
         const filter = document.getElementById('shopCategory').value;
         const container = document.getElementById('shopItems');
         container.replaceChildren();
+        if(filter==='all'||filter==='powerup') engine.consumables.forEach(item=>{
+            const card=document.createElement('article');card.className='shop-item shop-powerup';
+            const preview=document.createElement('div');preview.className='shop-preview';preview.style.setProperty('--preview-color',item.color);preview.textContent=item.symbol;
+            const heading=document.createElement('h3');heading.textContent=item.name+' · '+(state.consumables[item.id]||0)+' owned';
+            const description=document.createElement('p');description.textContent=item.description;
+            const button=document.createElement('button');button.type='button';button.textContent=item.cost+' COINS · BUY';button.disabled=state.coins<item.cost;
+            button.onclick=()=>{try{commit(engine.buyConsumable(state,item.id));render();renderShop();document.getElementById('shopStatus').textContent=item.name+' added to your inventory.';}catch(error){document.getElementById('shopStatus').textContent=error.message;}};
+            card.append(preview,heading,description,button);container.append(card);
+        });
         engine.catalog.filter(i => filter === 'all' || i.category === filter).forEach(item => {
             const card = document.createElement('article');
             card.className = 'shop-item';
@@ -142,7 +151,7 @@
                 preview.textContent='';const art=document.createElement('img');art.src=CosmeticArt.image(item.id);art.alt=item.name+' design';preview.appendChild(art);
             } else if(item.category==='card') {
                 preview.textContent='';const canvas=document.createElement('canvas');canvas.width=180;canvas.height=110;const c=canvas.getContext('2d');c.fillStyle='#141722';c.fillRect(0,0,180,110);CosmeticArt.card(c,item.value,180,110);c.fillStyle='#e6edf9';c.font='bold 12px Arial';c.fillText(item.name.toUpperCase(),12,33);c.globalAlpha=.55;[49,65,81].forEach(y=>c.fillRect(12,y,100,4));preview.appendChild(canvas);
-            } else if(item.category!=='banner') {
+            } else if(item.category!=='banner' && item.category!=='wordpack') {
                 preview.textContent='';const sample=document.createElement('span');sample.className='cosmetic-sample cosmetic-sample-'+item.category;
                 sample.textContent=item.category==='title'?item.name:item.category==='base'?'BASE':item.category==='trail'?'word':'';preview.appendChild(sample);
             }
@@ -152,9 +161,10 @@
             description.textContent = item.description;
             const button = document.createElement('button');
             button.type = 'button';
+            const permanent = item.category === 'wordpack';
             const equipped = item.category === 'card' ? owns(item.id) && profileCardStyle === item.value : state.equipped[item.category] === item.id;
-            button.textContent = equipped ? 'EQUIPPED' : owns(item.id) ? 'EQUIP' : item.cost + ' COINS · BUY & EQUIP';
-            button.disabled = equipped || (!owns(item.id) && state.coins < item.cost);
+            button.textContent = permanent && owns(item.id) ? 'OWNED · ENABLE IN SETTINGS' : equipped ? 'EQUIPPED' : owns(item.id) ? 'EQUIP' : item.cost + ' COINS · ' + (permanent ? 'UNLOCK' : 'BUY & EQUIP');
+            button.disabled = (permanent && owns(item.id)) || equipped || (!owns(item.id) && state.coins < item.cost);
             button.addEventListener('click', () => purchaseAndEquip(item));
             card.append(preview, heading, description, button);
             if (equipped) {
@@ -179,6 +189,12 @@
     }
     function purchaseAndEquip(item) {
         try {
+            if (item.category === 'wordpack') {
+                commit(engine.purchase(state,item.id)); render(); renderShop();
+                document.getElementById('shopStatus').textContent = item.name + ' unlocked. Enable it in Settings.';
+                if(window.KWWordPacks)KWWordPacks.render();
+                return;
+            }
             commit(engine.equip(engine.purchase(state, item.id), item.id));
             if (item.category === 'avatar') { applyCollectibleAvatar(item); updateProfileDisplay(); }
             if (item.category === 'card') selectProfileCardStyle(item.value);
@@ -326,7 +342,12 @@
         const shade=ctx.createLinearGradient(0,0,960,0);shade.addColorStop(0,'rgba(8,11,18,.9)');shade.addColorStop(1,'rgba(8,11,18,.2)');
         ctx.fillStyle=shade;ctx.fillRect(0,0,960,240);ctx.restore();
     }
-    window.WarriorRewards = {award,selectProfile,render,owns,openShop,decorateCard,avatarChanged,drawBanner};
+    function playerLevel(){return 1+Math.floor(state.xp/100);}
+    function hasUnlock(id){return state.unlocks.includes(id)||engine.unlocks.some(i=>i.id===id&&playerLevel()>=i.level);}
+    function unlockMode(id){commit(engine.unlock(state,id));render();return true;}
+    function consumePower(id){const next=engine.consume(state,id);if(!next)return false;commit(next);render();return true;}
+    function inventory(id){return state.consumables[id]||0;}
+    window.WarriorRewards = {award,selectProfile,render,owns,openShop,decorateCard,avatarChanged,drawBanner,playerLevel,hasUnlock,unlockMode,consumePower,inventory};
     window.awardWarriorRewards = function(event) {
         event.day=engine.dayKey();
         event.key = language + ':' + attitude + ':' + event.mode;

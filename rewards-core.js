@@ -19,7 +19,10 @@
         { id:'ghost-cyan', category:'ghost', name:'Glacier Ghost', cost:80, color:'#22d3ee', description:'An icy striped racer with a little ghost at the leading edge.' },
         { id:'ghost-pink', category:'ghost', name:'Rose Ghost', cost:80, color:'#f472b6', description:'A stardust racer with a little ghost at the leading edge.' },
         { id:'lane-dashed', category:'lane', name:'Track Marks', cost:100, color:'#cbd5e1', description:'Track boundaries and bold road markings for both racers.' },
-        { id:'lane-neon', category:'lane', name:'Neon Lanes', cost:140, color:'#a78bfa', description:'A luminous tunnel track with neon crossbars and glowing rails.' }
+        { id:'lane-neon', category:'lane', name:'Neon Lanes', cost:140, color:'#a78bfa', description:'A luminous tunnel track with neon crossbars and glowing rails.' },
+        { id:'wordpack-pharmaceutical', category:'wordpack', name:'Pharmaceutical Medicines', cost:300, color:'#60a5fa', symbol:'Rx', description:'Adds medicine names to Keyboard Defense and Typing Survival.' },
+        { id:'wordpack-medical', category:'wordpack', name:'Medical Terminologies', cost:300, color:'#fb7185', symbol:'⚕', description:'Adds anatomy, diagnosis, and clinical terms to both arcade modes.' },
+        { id:'wordpack-chemistry', category:'wordpack', name:'Chemistry', cost:300, color:'#a78bfa', symbol:'⚗', description:'Adds elements, compounds, and laboratory terms to both arcade modes.' }
     ];
     const badges = [
         { id:'first', name:'First Steps', description:'Finish your first qualifying round.' },
@@ -36,13 +39,22 @@
     badges.find(b=>b.id==='survivor').name='Survival Warrior';
     badges.find(b=>b.id==='combo').name='Combo Master';
     const badgeIds = badges.flatMap(b=>b.tiers?b.tiers.map(t=>t.id):[b.id]);
-    const fresh = () => ({version:3,xp:0,coins:0,rounds:0,owned:[],equipped:{},badges:[],achievementProgress:{},best:{},claims:[],daily:null,weekly:null});
+    const consumables = [
+        {id:'revive',name:'Revive',cost:180,color:'#fb7185',symbol:'♥',description:'Continue Keyboard Defense by restoring 1 life.'},
+        {id:'freeze',name:'Ice',cost:120,color:'#67e8f9',symbol:'❄',description:'Keyboard Defense only: slow every enemy for 5 seconds.'},
+        {id:'nova',name:'Boom',cost:160,color:'#fbbf24',symbol:'✦',description:'Keyboard Defense only: destroy every visible enemy and collect their points.'},
+        {id:'repair',name:'Repair',cost:90,color:'#6ee7b7',symbol:'+',description:'Keyboard Defense only: restore 1 life, or gain 3 points when the base is full.'},
+        {id:'slow',name:'Slow',cost:100,color:'#a78bfa',symbol:'◷',description:'Typing Survival only: add 50% more time to the current word.'},
+        {id:'skip',name:'Skip',cost:80,color:'#60a5fa',symbol:'↠',description:'Typing Survival only: replace the current word without losing a life.'}
+    ];
+    const unlocks = [{id:'trash-talk',name:'Ego Breaker',cost:600,level:5}];
+    const fresh = () => ({version:4,xp:0,coins:0,rounds:0,owned:[],equipped:{},consumables:{},unlocks:[],badges:[],achievementProgress:{},best:{},claims:[],daily:null,weekly:null});
     function badgeView(state,badge) {
         const value=badge.id==='veteran'?state.rounds:(state.achievementProgress[badge.id]||0);
         const levels=(badge.tiers||[]).map(t=>({...t,earned:state.badges.includes(t.id)}));
         return {value,levels,current:levels.filter(t=>t.earned).at(-1),unit:units[badge.id]};
     }
-    const dailyModes = ['easy','medium','nomercy','suddendeath','combo','curse','madlibs','reverse','ghostrace','defense','survival','treasure','freestyle','mirror','roast'];
+    const dailyModes = ['easy','medium','nomercy','suddendeath','combo','curse','madlibs','reverse','ghostrace','defense','survival','treasure','freestyle','mirror','roast','trash-talk'];
     function dayKey(date = new Date()) { return date.getFullYear() + '-' + String(date.getMonth()+1).padStart(2,'0') + '-' + String(date.getDate()).padStart(2,'0'); }
     function cleanDaily(raw) {
         if (!raw || !/^\d{4}-\d{2}-\d{2}$/.test(raw.day)) return null;
@@ -104,9 +116,11 @@
         const s = fresh();
         if (!raw || typeof raw !== 'object') return s;
         s.daily = cleanDaily(raw.daily);
-        s.weekly = raw.weekly ? cleanWeekly(raw.weekly) : null;
+        s.weekly = raw.weekly && /^\d{4}-\d{2}-\d{2}$/.test(raw.weekly.week || '') ? cleanWeekly(raw.weekly,raw.weekly.week) : null;
         ['xp','coins','rounds'].forEach(k => { s[k] = count(raw[k]); });
         s.owned = catalog.filter(i => Array.isArray(raw.owned) && raw.owned.includes(i.id)).map(i => i.id);
+        consumables.forEach(i=>{const amount=raw.consumables&&raw.consumables[i.id];if(Number.isSafeInteger(amount)&&amount>0)s.consumables[i.id]=Math.min(999,amount);});
+        s.unlocks=unlocks.filter(i=>Array.isArray(raw.unlocks)&&raw.unlocks.includes(i.id)).map(i=>i.id);
         s.badges = badgeIds.filter(id => Array.isArray(raw.badges) && raw.badges.includes(id));
         Object.keys(goals).forEach(id=>{
             const saved=raw.achievementProgress && raw.achievementProgress[id];
@@ -169,5 +183,8 @@
         state.equipped[item.category] = id;
         return state;
     }
-    root.RewardEngine = {catalog,badges,badgeView,fresh,normalize,award,purchase,equip,dayKey,dailyView,rerollDaily,weeklyView};
+    function buyConsumable(raw,id){const state=normalize(raw),item=consumables.find(i=>i.id===id);if(!item)throw Error('Unknown power-up.');if(state.coins<item.cost)throw Error('Not enough Key Coins yet.');state.coins-=item.cost;state.consumables[id]=(state.consumables[id]||0)+1;return state;}
+    function consume(raw,id){const state=normalize(raw);if(!(state.consumables[id]>0))return null;state.consumables[id]--;return state;}
+    function unlock(raw,id){const state=normalize(raw),item=unlocks.find(i=>i.id===id);if(!item)throw Error('Unknown mode.');if(state.unlocks.includes(id)||1+Math.floor(state.xp/100)>=item.level){if(!state.unlocks.includes(id))state.unlocks.push(id);return state;}if(state.coins<item.cost)throw Error('Not enough Key Coins yet.');state.coins-=item.cost;state.unlocks.push(id);return state;}
+    root.RewardEngine = {catalog,consumables,unlocks,badges,badgeView,fresh,normalize,award,purchase,equip,buyConsumable,consume,unlock,dayKey,dailyView,rerollDaily,weeklyView};
 })(globalThis);
