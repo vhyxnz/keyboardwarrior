@@ -347,7 +347,8 @@
     function unlockMode(id){commit(engine.unlock(state,id));render();return true;}
     function consumePower(id){const next=engine.consume(state,id);if(!next)return false;commit(next);render();return true;}
     function inventory(id){return state.consumables[id]||0;}
-    window.WarriorRewards = {award,selectProfile,render,owns,openShop,decorateCard,avatarChanged,drawBanner,playerLevel,hasUnlock,unlockMode,consumePower,inventory};
+    function grantCoins(amount){if(!Number.isSafeInteger(amount)||amount<=0)return false;const next=engine.normalize(state);next.coins+=amount;commit(next);render();notify('Developer code accepted · +'+amount+' Key Coins');return true;}
+    window.WarriorRewards = {award,selectProfile,render,owns,openShop,decorateCard,avatarChanged,drawBanner,playerLevel,hasUnlock,unlockMode,consumePower,inventory,grantCoins};
     window.awardWarriorRewards = function(event) {
         event.day=engine.dayKey();
         event.key = language + ':' + attitude + ':' + event.mode;

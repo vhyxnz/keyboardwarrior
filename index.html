@@ -2541,6 +2541,7 @@
     </style>
 <link rel="stylesheet" href="rewards.css">
 <link rel="stylesheet" href="word-packs.css">
+<link rel="stylesheet" href="dev-code.css">
 <link rel="stylesheet" href="chaos-view.css">
 <link rel="stylesheet" href="trash-talk.css">
 <link rel="stylesheet" href="quality-upgrades.css">
@@ -10008,6 +10009,7 @@
 <script src="trash-talk.js"></script>
 <script src="rewards.js"></script>
 <script src="word-packs.js"></script>
+<script src="dev-code.js"></script>
 <script src="shortcuts.js"></script>
 <script src="profile-layout.js"></script>
 <script src="quality-upgrades.js"></script>
@@ -10019,7 +10021,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=59", { updateViaCache: "none" })
+                .register("./sw.js?v=60", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
