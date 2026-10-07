@@ -1,10 +1,12 @@
-const CACHE_NAME = "keyboard-warrior-pwa-v63";
+const CACHE_NAME = "keyboard-warrior-pwa-v66";
 const APP_SHELL = [
     "./",
     "./index.html",
-    "./index.html?v=63",
+    "./index.html?v=66",
     "./arcade-mobile.js",
     "./arcade-mobile.css",
+    "./flat-interface.css",
+    "./login-reminders.js",
     "./quality-upgrades.js",
     "./quality-upgrades.css",
     "./practice-lab.js",
@@ -74,5 +76,18 @@ self.addEventListener("fetch", event => {
             .catch(() => caches.match(event.request).then(cached =>
                 cached || caches.match("./index.html")
             ))
+    );
+});
+
+self.addEventListener("notificationclick", event => {
+    event.notification.close();
+    event.waitUntil(
+        self.clients.matchAll({ type: "window", includeUncontrolled: true }).then(windowClients => {
+            if (windowClients.length) {
+                const client = windowClients[0];
+                return client.focus();
+            }
+            return self.clients.openWindow(event.notification.data?.url || "./");
+        })
     );
 });
