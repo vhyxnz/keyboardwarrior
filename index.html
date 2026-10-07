@@ -6752,10 +6752,10 @@
         ["qwertyuiop", "asdfghjkl", "zxcvbnm"].forEach(function(letters, rowIndex) {
             const row = document.createElement("div");
             row.className = "arcade-keyboard-row arcade-keyboard-row-" + (rowIndex + 1);
-            if (rowIndex === 2) row.appendChild(createArcadeKey("backspace", "⌫", "Backspace", "wide"));
             letters.split("").forEach(function(letter) {
                 row.appendChild(createArcadeKey(letter, letter, letter.toUpperCase(), ""));
             });
+            if (rowIndex === 2) row.appendChild(createArcadeKey("backspace", "⌫", "Backspace", "wide backspace"));
             keyboard.appendChild(row);
         });
         const bottom = document.createElement("div");
@@ -10101,7 +10101,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=67", { updateViaCache: "none" })
+                .register("./sw.js?v=68", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);
