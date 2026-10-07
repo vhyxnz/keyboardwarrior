@@ -1,0 +1,143 @@
+/* Lighter surfaces: reserve cards for choices and objects the player can act on. */
+.screen > .setting,
+.screen > .reward-panel,
+.screen > .daily-panel,
+.screen > .profile-editor,
+.screen > .result-box,
+#modeScreen > .mode-card {
+    background: transparent !important;
+    border: 0 !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--border, #353746) 72%, transparent) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 18px 2px !important;
+}
+
+.screen > .setting:last-child,
+.screen > .reward-panel:last-child,
+.screen > .daily-panel:last-child,
+#modeScreen > .mode-card:last-child {
+    border-bottom: 0 !important;
+}
+
+#settingsScreen .setting-title,
+#modeScreen .mode-card-title,
+.reward-panel > h2,
+.daily-panel > h2 {
+    letter-spacing: .09em;
+}
+
+/* Stats read as a compact dashboard instead of a wall of tiles. */
+#statsScreen .stats-grid {
+    gap: 0 !important;
+    border-block: 1px solid var(--border, #353746);
+}
+
+#statsScreen .stat-card {
+    background: transparent !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+#statsScreen .stat-card + .stat-card {
+    border-left: 1px solid var(--border, #353746) !important;
+}
+
+.login-reminder-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.login-reminder-actions .backup-btn {
+    flex: 1;
+}
+
+.setting-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--text, #f5f6fa);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: .04em;
+}
+
+.setting-toggle input {
+    width: 19px;
+    height: 19px;
+    margin: 0;
+    accent-color: var(--accent, #ff4d6d);
+}
+
+.login-reminder-status {
+    min-height: 1.3em;
+    margin: 9px 0 0;
+    color: var(--muted, #9699a8);
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+@media (max-width: 600px) {
+    /* Mobile uses one continuous surface. Dividers carry the hierarchy. */
+    #settingsScreen > .setting,
+    #modeScreen > .mode-card,
+    #chaosScreen > .mode-card,
+    .screen > .reward-panel,
+    .screen > .daily-panel,
+    .screen > .profile-editor,
+    .screen > .result-box,
+    .screen > .share-card,
+    .screen > .freestyle-card,
+    .screen > .roast-pass-card,
+    .screen > .arcade-result-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important;
+        padding: 16px 0 !important;
+        background: transparent !important;
+        background-image: none !important;
+        border: 0 !important;
+        border-bottom: 1px solid color-mix(in srgb, var(--border, #353746) 72%, transparent) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    #settingsScreen > .setting:last-child,
+    #modeScreen > .mode-card:last-of-type,
+    #chaosScreen > .mode-card:last-of-type {
+        border-bottom: 0 !important;
+    }
+
+    #settingsScreen {
+        row-gap: 0 !important;
+    }
+
+    #settingsScreen .setting-description {
+        margin-bottom: 10px;
+    }
+
+    #settingsScreen .version-setting {
+        min-height: 70px;
+    }
+
+    #settingsScreen .backup-btn,
+    #settingsScreen .danger-btn {
+        border-radius: 10px !important;
+    }
+
+    #statsScreen .stats-grid,
+    #statsScreen .overall-stats-grid {
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+
+    .login-reminder-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

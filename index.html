@@ -2549,7 +2549,7 @@
 <link rel="stylesheet" href="final-upgrades.css">
 <link rel="stylesheet" href="banner-highlights.css">
 <link rel="stylesheet" href="arcade-mobile.css">
-<link rel="stylesheet" href="flat-interface.css">
+<link rel="stylesheet" href="flat-interface.css?v=2">
 </head>
 
 <body class="profile-select">
@@ -10101,7 +10101,7 @@
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
-                .register("./sw.js?v=66", { updateViaCache: "none" })
+                .register("./sw.js?v=67", { updateViaCache: "none" })
                 .then(function(registration) { return registration.update(); })
                 .catch(function(error) {
                     console.warn("Keyboard Warrior service worker was not registered:", error);

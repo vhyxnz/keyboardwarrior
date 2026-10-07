@@ -61,8 +61,8 @@
 
         try {
             const registration = await navigator.serviceWorker?.ready;
-            if (registration) await registration.showNotification("Keyboard Warrior demands attendance", options);
-            else new Notification("Keyboard Warrior demands attendance", options);
+            if (registration) await registration.showNotification("Your keyboard is getting impatient", options);
+            else new Notification("Your keyboard is getting impatient", options);
             localStorage.setItem(LAST_KEY, String(Date.now()));
             return true;
         } catch (error) {
